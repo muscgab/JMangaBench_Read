@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JMangaBench_Read Pareto</title>
+<style>
+:root{--surface:#fcfcfb;--panel:#ffffff;--ink:#0b0b0b;--ink2:#52514e;--muted:#8a8984;--grid:#e9e8e3;--axis:#c3c2b7;--front:#52514e;
+--ours:#2a78d6;--hayai:#eb6834;--other:#8a8984;--tip:#ffffff;--tipb:#e2e1db;--hl:#eef3fb}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--surface:#1a1a19;--panel:#222221;--ink:#ffffff;--ink2:#c3c2b7;--muted:#8a8984;
+--grid:#2e2e2c;--axis:#4a4a46;--front:#c3c2b7;--ours:#3987e5;--hayai:#d95926;--other:#8a8984;--tip:#262625;--tipb:#3a3a37;--hl:#1f2a38}}
+:root[data-theme="dark"]{--surface:#1a1a19;--panel:#222221;--ink:#ffffff;--ink2:#c3c2b7;--muted:#8a8984;--grid:#2e2e2c;--axis:#4a4a46;--front:#c3c2b7;
+--ours:#3987e5;--hayai:#d95926;--other:#8a8984;--tip:#262625;--tipb:#3a3a37;--hl:#1f2a38}
+*{box-sizing:border-box}body{margin:0;background:var(--surface);color:var(--ink);font:14px/1.45 "Helvetica Neue",Helvetica,Arial,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 16px 40px}
+h1{font-size:22px;margin:0 0 4px;font-weight:600}.sub{color:var(--ink2);margin:0 0 16px}
+.controls{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-bottom:8px}
+.seg{display:inline-flex;border:1px solid var(--axis);border-radius:8px;overflow:hidden}
+.seg button{background:transparent;color:var(--ink2);border:0;padding:6px 12px;font:inherit;cursor:pointer}
+.seg button+button{border-left:1px solid var(--axis)}.seg button[aria-pressed="true"]{background:var(--hl);color:var(--ink);font-weight:600}
+.lab{color:var(--muted);font-size:12px;margin-right:6px}
+.legend{display:flex;gap:16px;color:var(--ink2);font-size:13px;margin:4px 0 4px}.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.chart{position:relative;width:100%}svg{display:block;width:100%;height:auto}
+.tick{fill:var(--ink2);font-size:12px}.axlab{fill:var(--ink2);font-size:12.5px}.mlab{fill:var(--ink);font-size:12.5px;pointer-events:none}
+.tip{position:absolute;pointer-events:none;background:var(--tip);border:1px solid var(--tipb);border-radius:8px;padding:10px 12px;box-shadow:0 4px 18px rgba(0,0,0,.12);
+font-size:12.5px;min-width:250px;display:none;z-index:5}.tip h3{margin:0 0 2px;font-size:14px}.tip .k{color:var(--ink2)}.tip table{border-collapse:collapse;width:100%}
+.tip td{padding:1px 0}.tip td:last-child{text-align:right;font-variant-numeric:tabular-nums}.tip .sec{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;padding-top:6px}
+.note{color:var(--ink2);font-size:12px;margin-top:8px}
+details{margin-top:20px}summary{cursor:pointer;color:var(--ink2)}
+table.data{border-collapse:collapse;width:100%;margin-top:8px;font-size:12.5px}table.data th,table.data td{padding:5px 8px;border-bottom:1px solid var(--grid);text-align:right;white-space:nowrap}
+table.data th:first-child,table.data td:first-child{text-align:left}table.data th{color:var(--ink2);font-weight:600;cursor:pointer}
+.tablewrap{overflow-x:auto}
+</style></head><body><div class="wrap">
+<h1 id="title">Accuracy vs. page latency</h1>
+<p class="sub">JMangaBench_Read v1.2 · 3,142 text boxes · RTX 3080 Ti · line = Pareto frontier · hover a dot for details · <a href="https://github.com/muscgab/JMangaBench_Read" style="color:var(--ink2)">GitHub</a></p>
+<div class="controls">
+ <div><span class="lab">X</span><span class="seg" id="xseg">
+  <button data-x="page" aria-pressed="true">Page latency</button><button data-x="lat" aria-pressed="false">Per-image latency</button><button data-x="thr" aria-pressed="false">Max throughput</button></span></div>
+ <div><span class="lab">Y</span><span class="seg" id="yseg">
+  <button data-y="score" aria-pressed="true">Composite</button><button data-y="cer" aria-pressed="false">CER</button><button data-y="em" aria-pressed="false">Exact match</button></span></div>
+ <div><span class="lab">Subset</span><span class="seg" id="sseg">
+  <button data-s="all" aria-pressed="true">All</button><button data-s="printed" aria-pressed="false">Printed</button><button data-s="non_printed" aria-pressed="false">Non-printed</button><button data-s="gold" aria-pressed="false">Gold</button><button data-s="hard" aria-pressed="false">Hard</button><button data-s="sfx" aria-pressed="false">SFX set</button></span></div>
+</div>
+<div class="legend"><span><i style="background:var(--ours)"></i>NAR (Preview / LoopNAR-α)</span><span><i style="background:var(--hayai)"></i>Hayai family (AR)</span><span><i style="background:var(--other)"></i>Other</span></div>
+<div class="chart" id="chart"><svg id="svg" viewBox="0 0 1000 600" role="img" aria-label="Pareto chart"></svg><div class="tip" id="tip"></div></div>
+<p class="note" id="note"></p>
+<details><summary>Table view</summary><div class="tablewrap"><table class="data" id="tbl"></table></div></details>
+</div>
+<script>
+const DATA = [{"id": "preview", "name": "Preview", "arch": "NAR", "group": "ours", "precision": "bf16", "params_m": 196.0, "params_note": "", "score": 95.55, "page_score": 95.58, "cer": 3.21, "em": 85.3, "cer_hard": 11.16, "cer_np": 6.13, "cer_p": 2.58, "page_cer": 3.21, "page_em": 85.26, "lat": 51.1, "vram_bs1": 421, "page_p50": 81.46, "page_ms_img": 9.82, "thr": 166.88, "best_bs": 20, "best_mem": 3374, "note": "Ours.", "sub": {"b": {"all": {"score": 95.55, "cer": 3.21, "em": 85.3, "n": 3142}, "printed": {"score": 97.95, "cer": 2.58, "em": 88.79, "n": 2328}, "non_printed": {"score": 93.15, "cer": 6.13, "em": 75.31, "n": 814}, "gold": {"score": 91.8, "cer": 8.2, "em": 67.28, "n": 547}, "hard": {"score": 89.21, "cer": 11.16, "em": 57.97, "n": 364}, "sfx": {"score": 90.29, "cer": 10.82, "em": 75.79, "n": 380}}, "p": {"all": {"score": 95.58, "cer": 3.21, "em": 85.26, "n": 3142}, "printed": {"score": 97.94, "cer": 2.59, "em": 88.7, "n": 2328}, "non_printed": {"score": 93.22, "cer": 6.07, "em": 75.43, "n": 814}, "gold": {"score": 91.87, "cer": 8.15, "em": 67.28, "n": 547}, "hard": {"score": 89.31, "cer": 11.09, "em": 57.97, "n": 364}, "sfx": {"score": 90.35, "cer": 10.73, "em": 76.05, "n": 380}}}}, {"id": "looped_L1_bf16", "name": "LoopNAR-α L1", "arch": "NAR", "group": "ours", "precision": "bf16", "params_m": 50.0, "params_note": "", "score": 93.88, "page_score": 93.86, "cer": 4.07, "em": 81.51, "cer_hard": 13.23, "cer_np": 9.32, "cer_p": 2.93, "page_cer": 4.06, "page_em": 81.51, "lat": 22.5, "vram_bs1": 239, "page_p50": 52.06, "page_ms_img": 6.75, "thr": 268.13, "best_bs": 24, "best_mem": 8870, "note": "Ours, in development. 1 decoder loop.", "sub": {"b": {"all": {"score": 93.88, "cer": 4.07, "em": 81.51, "n": 3142}, "printed": {"score": 97.97, "cer": 2.93, "em": 87.89, "n": 2328}, "non_printed": {"score": 89.78, "cer": 9.32, "em": 63.27, "n": 814}, "gold": {"score": 89.81, "cer": 9.54, "em": 60.51, "n": 547}, "hard": {"score": 86.74, "cer": 13.23, "em": 50.0, "n": 364}, "sfx": {"score": 87.36, "cer": 14.31, "em": 69.74, "n": 380}}, "p": {"all": {"score": 93.86, "cer": 4.06, "em": 81.51, "n": 3142}, "printed": {"score": 97.95, "cer": 2.92, "em": 87.84, "n": 2328}, "non_printed": {"score": 89.78, "cer": 9.32, "em": 63.39, "n": 814}, "gold": {"score": 89.81, "cer": 9.57, "em": 60.51, "n": 547}, "hard": {"score": 86.73, "cer": 13.28, "em": 49.73, "n": 364}, "sfx": {"score": 87.32, "cer": 14.31, "em": 69.47, "n": 380}}}}, {"id": "looped_L2_bf16", "name": "LoopNAR-α L2", "arch": "NAR", "group": "ours", "precision": "bf16", "params_m": 50.0, "params_note": "", "score": 94.24, "page_score": 94.26, "cer": 3.55, "em": 82.78, "cer_hard": 12.63, "cer_np": 8.64, "cer_p": 2.45, "page_cer": 3.55, "page_em": 82.72, "lat": 27.5, "vram_bs1": 239, "page_p50": 56.83, "page_ms_img": 7.2, "thr": null, "best_bs": null, "best_mem": null, "note": "Ours, in development. 2 decoder loops.", "sub": {"b": {"all": {"score": 94.24, "cer": 3.55, "em": 82.78, "n": 3142}, "printed": {"score": 98.16, "cer": 2.45, "em": 89.0, "n": 2328}, "non_printed": {"score": 90.33, "cer": 8.64, "em": 64.99, "n": 814}, "gold": {"score": 90.02, "cer": 9.13, "em": 60.15, "n": 547}, "hard": {"score": 87.07, "cer": 12.63, "em": 50.0, "n": 364}, "sfx": {"score": 88.18, "cer": 13.39, "em": 71.05, "n": 380}}, "p": {"all": {"score": 94.26, "cer": 3.55, "em": 82.72, "n": 3142}, "printed": {"score": 98.16, "cer": 2.45, "em": 89.0, "n": 2328}, "non_printed": {"score": 90.37, "cer": 8.64, "em": 64.74, "n": 814}, "gold": {"score": 90.03, "cer": 9.11, "em": 60.15, "n": 547}, "hard": {"score": 87.05, "cer": 12.66, "em": 49.73, "n": 364}, "sfx": {"score": 88.09, "cer": 13.48, "em": 70.79, "n": 380}}}}, {"id": "looped_L3_bf16", "name": "LoopNAR-α L3", "arch": "NAR", "group": "ours", "precision": "bf16", "params_m": 50.0, "params_note": "", "score": 94.13, "page_score": 94.15, "cer": 3.5, "em": 82.46, "cer_hard": 12.85, "cer_np": 8.75, "cer_p": 2.36, "page_cer": 3.5, "page_em": 82.59, "lat": 32.5, "vram_bs1": 239, "page_p50": 62.64, "page_ms_img": 7.79, "thr": 238.97, "best_bs": 28, "best_mem": 4544, "note": "Ours, in development. 3 decoder loops.", "sub": {"b": {"all": {"score": 94.13, "cer": 3.5, "em": 82.46, "n": 3142}, "printed": {"score": 98.12, "cer": 2.36, "em": 88.79, "n": 2328}, "non_printed": {"score": 90.14, "cer": 8.75, "em": 64.37, "n": 814}, "gold": {"score": 89.63, "cer": 9.21, "em": 59.6, "n": 547}, "hard": {"score": 86.5, "cer": 12.85, "em": 48.63, "n": 364}, "sfx": {"score": 87.59, "cer": 13.98, "em": 70.53, "n": 380}}, "p": {"all": {"score": 94.15, "cer": 3.5, "em": 82.59, "n": 3142}, "printed": {"score": 98.14, "cer": 2.35, "em": 88.96, "n": 2328}, "non_printed": {"score": 90.16, "cer": 8.77, "em": 64.37, "n": 814}, "gold": {"score": 89.65, "cer": 9.18, "em": 59.78, "n": 547}, "hard": {"score": 86.53, "cer": 12.82, "em": 48.9, "n": 364}, "sfx": {"score": 87.53, "cer": 14.06, "em": 70.26, "n": 380}}}}, {"id": "hayai_v2", "name": "Hayai v2.1", "arch": "AR", "group": "hayai", "precision": "fp16 autocast", "params_m": 155.6, "params_note": "", "score": 95.83, "page_score": 95.83, "cer": 2.67, "em": 86.25, "cer_hard": 10.01, "cer_np": 6.73, "cer_p": 1.79, "page_cer": 2.67, "page_em": 86.25, "lat": 91.3, "vram_bs1": 632, "page_p50": 189.62, "page_ms_img": 24.17, "thr": 142.84, "best_bs": 320, "best_mem": 11194, "note": "hayai-ocr-v2 main branch (weights = v2.1).", "sub": {"b": {"all": {"score": 95.83, "cer": 2.67, "em": 86.25, "n": 3142}, "printed": {"score": 98.25, "cer": 1.79, "em": 90.25, "n": 2328}, "non_printed": {"score": 93.42, "cer": 6.73, "em": 74.82, "n": 814}, "gold": {"score": 91.8, "cer": 7.34, "em": 67.46, "n": 547}, "hard": {"score": 89.22, "cer": 10.01, "em": 56.87, "n": 364}, "sfx": {"score": 87.3, "cer": 14.48, "em": 70.26, "n": 380}}, "p": {"all": {"score": 95.83, "cer": 2.67, "em": 86.25, "n": 3142}, "printed": {"score": 98.25, "cer": 1.79, "em": 90.25, "n": 2328}, "non_printed": {"score": 93.42, "cer": 6.73, "em": 74.82, "n": 814}, "gold": {"score": 91.8, "cer": 7.34, "em": 67.46, "n": 547}, "hard": {"score": 89.22, "cer": 10.01, "em": 56.87, "n": 364}, "sfx": {"score": 87.3, "cer": 14.48, "em": 70.26, "n": 380}}}}, {"id": "hayai_nova_p256", "name": "Hayai v2.5 Nova p256", "arch": "AR", "group": "hayai", "precision": "fp16 autocast", "params_m": 156.9, "params_note": "", "score": 96.49, "page_score": 96.53, "cer": 3.08, "em": 86.28, "cer_hard": 10.88, "cer_np": 5.39, "cer_p": 2.58, "page_cer": 3.02, "page_em": 86.28, "lat": 92.0, "vram_bs1": 630, "page_p50": 189.32, "page_ms_img": 23.12, "thr": 163.39, "best_bs": 256, "best_mem": 6884, "note": "", "sub": {"b": {"all": {"score": 96.49, "cer": 3.08, "em": 86.28, "n": 3142}, "printed": {"score": 98.52, "cer": 2.58, "em": 89.73, "n": 2328}, "non_printed": {"score": 94.46, "cer": 5.39, "em": 76.41, "n": 814}, "gold": {"score": 92.95, "cer": 7.93, "em": 68.92, "n": 547}, "hard": {"score": 90.32, "cer": 10.88, "em": 58.52, "n": 364}, "sfx": {"score": 91.06, "cer": 9.73, "em": 78.68, "n": 380}}, "p": {"all": {"score": 96.53, "cer": 3.02, "em": 86.28, "n": 3142}, "printed": {"score": 98.56, "cer": 2.52, "em": 89.78, "n": 2328}, "non_printed": {"score": 94.5, "cer": 5.31, "em": 76.29, "n": 814}, "gold": {"score": 93.01, "cer": 7.8, "em": 69.1, "n": 547}, "hard": {"score": 90.38, "cer": 10.78, "em": 58.52, "n": 364}, "sfx": {"score": 91.03, "cer": 9.82, "em": 78.95, "n": 380}}}}, {"id": "hayai_nova_p384", "name": "Hayai v2.5 Nova p384", "arch": "AR", "group": "hayai", "precision": "fp16 autocast", "params_m": 156.9, "params_note": "", "score": 96.51, "page_score": 96.6, "cer": 2.63, "em": 87.36, "cer_hard": 10.03, "cer_np": 5.55, "cer_p": 2.0, "page_cer": 2.55, "page_em": 87.46, "lat": 94.7, "vram_bs1": 634, "page_p50": 212.84, "page_ms_img": 26.74, "thr": 130.47, "best_bs": 192, "best_mem": 9260, "note": "", "sub": {"b": {"all": {"score": 96.51, "cer": 2.63, "em": 87.36, "n": 3142}, "printed": {"score": 98.71, "cer": 2.0, "em": 90.94, "n": 2328}, "non_printed": {"score": 94.3, "cer": 5.55, "em": 77.15, "n": 814}, "gold": {"score": 92.69, "cer": 7.4, "em": 70.75, "n": 547}, "hard": {"score": 90.1, "cer": 10.03, "em": 60.99, "n": 364}, "sfx": {"score": 90.79, "cer": 9.98, "em": 77.63, "n": 380}}, "p": {"all": {"score": 96.6, "cer": 2.55, "em": 87.46, "n": 3142}, "printed": {"score": 98.73, "cer": 1.94, "em": 91.07, "n": 2328}, "non_printed": {"score": 94.47, "cer": 5.4, "em": 77.15, "n": 814}, "gold": {"score": 92.83, "cer": 7.46, "em": 70.57, "n": 547}, "hard": {"score": 90.33, "cer": 10.06, "em": 60.71, "n": 364}, "sfx": {"score": 91.03, "cer": 9.57, "em": 77.89, "n": 380}}}}, {"id": "hayai_nova_p512", "name": "Hayai v2.5 Nova p512", "arch": "AR", "group": "hayai", "precision": "fp16 autocast", "params_m": 156.9, "params_note": "", "score": 96.54, "page_score": 96.56, "cer": 2.71, "em": 87.4, "cer_hard": 9.14, "cer_np": 6.91, "cer_p": 1.8, "page_cer": 2.65, "page_em": 87.59, "lat": 102.3, "vram_bs1": 636, "page_p50": 205.2, "page_ms_img": 25.59, "thr": 84.34, "best_bs": 192, "best_mem": 8542, "note": "", "sub": {"b": {"all": {"score": 96.54, "cer": 2.71, "em": 87.4, "n": 3142}, "printed": {"score": 98.63, "cer": 1.8, "em": 91.28, "n": 2328}, "non_printed": {"score": 94.46, "cer": 6.91, "em": 76.29, "n": 814}, "gold": {"score": 93.17, "cer": 6.54, "em": 69.65, "n": 547}, "hard": {"score": 90.76, "cer": 9.14, "em": 59.34, "n": 364}, "sfx": {"score": 91.07, "cer": 9.9, "em": 77.63, "n": 380}}, "p": {"all": {"score": 96.56, "cer": 2.65, "em": 87.59, "n": 3142}, "printed": {"score": 98.65, "cer": 1.73, "em": 91.41, "n": 2328}, "non_printed": {"score": 94.47, "cer": 6.91, "em": 76.66, "n": 814}, "gold": {"score": 93.28, "cer": 6.33, "em": 70.2, "n": 547}, "hard": {"score": 90.9, "cer": 8.88, "em": 59.89, "n": 364}, "sfx": {"score": 91.04, "cer": 9.98, "em": 77.63, "n": 380}}}}, {"id": "baberu", "name": "baberuOCR", "arch": "AR", "group": "other", "precision": "bf16", "params_m": 112.8, "params_note": "", "score": 93.54, "page_score": 93.52, "cer": 3.89, "em": 82.65, "cer_hard": 16.07, "cer_np": 12.12, "cer_p": 2.11, "page_cer": 3.88, "page_em": 82.56, "lat": 100.9, "vram_bs1": 254, "page_p50": 216.18, "page_ms_img": 26.51, "thr": 160.12, "best_bs": 256, "best_mem": 9498, "note": "", "sub": {"b": {"all": {"score": 93.54, "cer": 3.89, "em": 82.65, "n": 3142}, "printed": {"score": 98.5, "cer": 2.11, "em": 90.16, "n": 2328}, "non_printed": {"score": 88.58, "cer": 12.12, "em": 61.18, "n": 814}, "gold": {"score": 88.88, "cer": 11.46, "em": 62.52, "n": 547}, "hard": {"score": 84.94, "cer": 16.07, "em": 51.92, "n": 364}, "sfx": {"score": 73.27, "cer": 29.78, "em": 51.32, "n": 380}}, "p": {"all": {"score": 93.52, "cer": 3.88, "em": 82.56, "n": 3142}, "printed": {"score": 98.49, "cer": 2.12, "em": 90.08, "n": 2328}, "non_printed": {"score": 88.55, "cer": 12.04, "em": 61.06, "n": 814}, "gold": {"score": 88.91, "cer": 11.3, "em": 62.52, "n": 547}, "hard": {"score": 84.98, "cer": 15.83, "em": 51.92, "n": 364}, "sfx": {"score": 73.26, "cer": 29.78, "em": 51.58, "n": 380}}}}, {"id": "manga_ocr", "name": "mangaOCR", "arch": "AR", "group": "other", "precision": "fp32", "params_m": 111.0, "params_note": "≈ from fp32 weight file size", "score": 90.13, "page_score": 90.13, "cer": 5.01, "em": 78.04, "cer_hard": 17.76, "cer_np": 17.1, "cer_p": 2.39, "page_cer": 5.01, "page_em": 78.04, "lat": 66.5, "vram_bs1": 451, "page_p50": 205.96, "page_ms_img": 26.67, "thr": 46.0, "best_bs": 24, "best_mem": 4566, "note": "Parameter count estimated from the fp32 weight file size.", "sub": {"b": {"all": {"score": 90.13, "cer": 5.01, "em": 78.04, "n": 3142}, "printed": {"score": 98.31, "cer": 2.39, "em": 88.66, "n": 2328}, "non_printed": {"score": 81.95, "cer": 17.1, "em": 47.67, "n": 814}, "gold": {"score": 84.94, "cer": 13.22, "em": 54.3, "n": 547}, "hard": {"score": 80.8, "cer": 17.76, "em": 42.58, "n": 364}, "sfx": {"score": 61.1, "cer": 45.34, "em": 36.05, "n": 380}}, "p": {"all": {"score": 90.13, "cer": 5.01, "em": 78.04, "n": 3142}, "printed": {"score": 98.31, "cer": 2.39, "em": 88.66, "n": 2328}, "non_printed": {"score": 81.95, "cer": 17.1, "em": 47.67, "n": 814}, "gold": {"score": 84.94, "cer": 13.22, "em": 54.3, "n": 547}, "hard": {"score": 80.8, "cer": 17.76, "em": 42.58, "n": 364}, "sfx": {"score": 61.1, "cer": 45.34, "em": 36.05, "n": 380}}}}, {"id": "paddleocr_vl_manga", "name": "PaddleOCR-VL-For-Manga", "arch": "AR (VLM)", "group": "other", "precision": "bf16", "params_m": 958.6, "params_note": "", "score": 94.64, "page_score": null, "cer": 2.13, "em": 87.08, "cer_hard": 7.48, "cer_np": 8.72, "cer_p": 0.7, "page_cer": null, "page_em": null, "lat": 253.9, "vram_bs1": 2549, "page_p50": null, "page_ms_img": null, "thr": 4.04, "best_bs": 1, "best_mem": 2702, "note": "Batched outputs invalid in our harness: page latency not measured, throughput at batch 1.", "sub": {"b": {"all": {"score": 94.64, "cer": 2.13, "em": 87.08, "n": 3142}, "printed": {"score": 99.13, "cer": 0.7, "em": 94.8, "n": 2328}, "non_printed": {"score": 90.15, "cer": 8.72, "em": 64.99, "n": 814}, "gold": {"score": 91.02, "cer": 5.77, "em": 67.09, "n": 547}, "hard": {"score": 88.08, "cer": 7.48, "em": 57.42, "n": 364}, "sfx": {"score": 80.86, "cer": 20.22, "em": 62.11, "n": 380}}, "p": null}}];
+const X = {page:{key:"page_p50",label:"Latency per page, p50 (ms) — all boxes of a page in one batch, 8.7 boxes/page avg  ←  faster",better:"low",title:"page latency"},
+           lat:{key:"lat",label:"Per-image latency (ms, batch = 1, preprocessing included)  ←  faster",better:"low",title:"per-image latency"},
+           thr:{key:"thr",label:"Max throughput (images/s, best batch size per model)  faster  →",better:"high",title:"max throughput"}};
+const Y = {score:{label:"Composite score (1 − NED, printed / non-printed averaged)",better:"high",title:"Accuracy"},
+           cer:{label:"CER (%) — lower is better, axis reversed",better:"low",title:"CER"},
+           em:{label:"Exact match (%)",better:"high",title:"Exact match"}};
+const S = {all:"all boxes, 3,142", printed:"printed, 2,328 boxes", non_printed:"non-printed, 814 boxes", gold:"gold, 547 boxes", hard:"hard, 364 boxes", sfx:"SFX set (not in main score), 380 boxes"};
+function ylabel(){ if (sy === "score") return ss === "all" ? Y.score.label : `1 − NED, ${S[ss]}`; return Y[sy].label.replace(" (%)", ` (%), ${S[ss]}`).replace("(%) —", `(%), ${S[ss]} —`); }
+const NOTE = {page:"Scores use the outputs produced under page batching. PaddleOCR-VL not shown (batched outputs invalid). LoopNAR-α runs in bf16 and is in development.",
+              lat:"Scores from batch = 1 outputs. LoopNAR-α runs in bf16 (L3 in fp32: 26 ms, composite 94.16).",
+              thr:"Scores from batch = 1 outputs. PaddleOCR-VL at batch 1 (batched outputs invalid). LoopNAR-α L2 not measured."};
+const SHORT = n => n.replace("Hayai v2.5 Nova ","Nova ").replace("PaddleOCR-VL-For-Manga","PaddleOCR-VL");
+let sx = "page", sy = "score", ss = "all";
+const svg = document.getElementById("svg"), tip = document.getElementById("tip"), NS = "http://www.w3.org/2000/svg";
+const W = 1000, H = 600, M = {l:64, r:24, t:16, b:56};
+const el = (t, a, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); (p||svg).appendChild(e); return e; };
+function nice(lo, hi, n){ const span = hi - lo, step0 = span / n, mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const step = [1,2,2.5,5,10].map(m => m*mag).find(s => s >= step0); const a = Math.floor(lo/step)*step, b = Math.ceil(hi/step)*step;
+  const t = []; for (let v = a; v <= b + 1e-9; v += step) t.push(+v.toFixed(6)); return {a, b, t}; }
+function yval(d){ const m = d.sub[sx === "page" ? "p" : "b"]; return m ? m[ss][sy] : null; }
+function draw(){
+  svg.innerHTML = "";
+  const xs = X[sx], ys = Y[sy];
+  const pts = DATA.filter(d => d[xs.key] != null && yval(d) != null).map(d => ({d, x:d[xs.key], y:yval(d)}));
+  const xr = nice(0, Math.max(...pts.map(p => p.x)) * 1.05, 6);
+  const ylo = Math.min(...pts.map(p => p.y)), yhi = Math.max(...pts.map(p => p.y)), pad = (yhi - ylo) * 0.08;
+  const yr = nice(ylo - pad, yhi + pad, 7);
+  const px = v => M.l + (v - xr.a) / (xr.b - xr.a) * (W - M.l - M.r);
+  const py = ys.better === "high" ? v => H - M.b - (v - yr.a) / (yr.b - yr.a) * (H - M.t - M.b)
+                                  : v => M.t + (v - yr.a) / (yr.b - yr.a) * (H - M.t - M.b);
+  for (const t of xr.t){ el("line", {x1:px(t), x2:px(t), y1:M.t, y2:H-M.b, stroke:"var(--grid)"}); const e = el("text", {x:px(t), y:H-M.b+20, "text-anchor":"middle", class:"tick"}); e.textContent = t; }
+  for (const t of yr.t){ el("line", {x1:M.l, x2:W-M.r, y1:py(t), y2:py(t), stroke:"var(--grid)"}); const e = el("text", {x:M.l-10, y:py(t)+4, "text-anchor":"end", class:"tick"}); e.textContent = t; }
+  el("line", {x1:M.l, x2:W-M.r, y1:H-M.b, y2:H-M.b, stroke:"var(--axis)"});
+  let e = el("text", {x:(M.l+W-M.r)/2, y:H-12, "text-anchor":"middle", class:"axlab"}); e.textContent = xs.label;
+  e = el("text", {x:16, y:(M.t+H-M.b)/2, "text-anchor":"middle", class:"axlab", transform:`rotate(-90 16 ${(M.t+H-M.b)/2})`}); e.textContent = ylabel();
+  const bx = (a, b) => xs.better === "low" ? a < b : a > b, by = (a, b) => ys.better === "low" ? a < b : a > b;
+  const front = pts.filter(p => !pts.some(q => q !== p && (bx(q.x, p.x) || q.x === p.x) && (by(q.y, p.y) || q.y === p.y) && !(q.x === p.x && q.y === p.y))).sort((a, b) => a.x - b.x);
+  el("polyline", {points:front.map(p => `${px(p.x)},${py(p.y)}`).join(" "), fill:"none", stroke:"var(--front)", "stroke-width":1.6, "stroke-linejoin":"round"});
+  // labels: greedy placement over candidate offsets, avoiding dots, labels and the frontier vertices
+  const placed = [], dots = pts.map(p => ({x:px(p.x), y:py(p.y)}));
+  const cands = [[18,-18],[18,18],[-18,-18],[-18,18],[26,0],[-26,0],[0,-26],[0,26],[34,-30],[-34,-30],[34,30],[-34,30],[48,-8],[-48,-8],[52,-40],[-52,-40],[52,40],[-52,40]];
+  const g = el("g", {});
+  for (const p of pts.slice().sort((a, b) => b.y - a.y)){
+    const cx = px(p.x), cy = py(p.y), t = el("text", {class:"mlab"}, g); t.textContent = SHORT(p.d.name);
+    let best = null;
+    for (const [dx, dy] of cands){
+      const anchor = dx < 0 ? "end" : (dx === 0 ? "middle" : "start"); t.setAttribute("text-anchor", anchor); t.setAttribute("x", cx + dx); t.setAttribute("y", cy + dy + 4);
+      const b = t.getBBox(), box = {x:b.x-3, y:b.y-2, w:b.width+6, h:b.height+4};
+      const inside = box.x >= M.l && box.x + box.w <= W - M.r && box.y >= M.t && box.y + box.h <= H - M.b;
+      const hit = placed.some(o => box.x < o.x + o.w && box.x + box.w > o.x && box.y < o.y + o.h && box.y + box.h > o.y)
+              || dots.some(d => d.x > box.x - 6 && d.x < box.x + box.w + 6 && d.y > box.y - 6 && d.y < box.y + box.h + 6);
+      const cost = (inside ? 0 : 1000) + (hit ? 100 : 0) + Math.hypot(dx, dy) / 10;
+      if (!best || cost < best.cost) best = {cost, dx, dy, anchor, box};
+    }
+    t.setAttribute("text-anchor", best.anchor); t.setAttribute("x", cx + best.dx); t.setAttribute("y", cy + best.dy + 4); placed.push(best.box);
+    const lx = best.anchor === "end" ? best.box.x + best.box.w : (best.anchor === "start" ? best.box.x : cx), ly = best.box.y + best.box.h / 2;
+    el("line", {x1:cx, y1:cy, x2:lx, y2:ly, stroke:"var(--muted)", "stroke-width":0.8}, g).parentNode.insertBefore(g.lastChild, g.firstChild);
+  }
+  for (const p of pts){
+    const col = `var(--${p.d.group})`, cx = px(p.x), cy = py(p.y);
+    const c = el("circle", {cx, cy, r:5, fill:col, stroke:"var(--surface)", "stroke-width":2});
+    const hit = el("circle", {cx, cy, r:14, fill:"transparent", style:"cursor:pointer"});
+    hit.addEventListener("mouseenter", ev => { c.setAttribute("r", 7); show(p.d, ev); });
+    hit.addEventListener("mousemove", ev => move(ev));
+    hit.addEventListener("mouseleave", () => { c.setAttribute("r", 5); tip.style.display = "none"; });
+  }
+  document.getElementById("title").textContent = `${ys.title} vs. ${xs.title}` + (ss === "all" ? "" : ` — ${S[ss].split(",")[0]}`);
+  document.getElementById("note").textContent = NOTE[sx];
+}
+const f = (v, s = "", d = 1) => v == null ? "—" : (+v).toFixed(d) + s;
+function show(d, ev){
+  tip.innerHTML = `<h3>${d.name}</h3><div class="k">${d.arch} · ${f(d.params_m, "M", 1)} params · ${d.precision}</div>
+  <table><tr><td class="sec" colspan="2">Accuracy (batch = 1)</td></tr>
+  <tr><td>Composite</td><td><b>${f(d.score, "", 2)}</b></td></tr><tr><td>CER all / hard</td><td>${f(d.cer, "%", 2)} / ${f(d.cer_hard, "%", 2)}</td></tr>
+  <tr><td>CER non-printed / printed</td><td>${f(d.cer_np, "%", 2)} / ${f(d.cer_p, "%", 2)}</td></tr><tr><td>Exact match</td><td>${f(d.em, "%", 2)}</td></tr>
+  <tr><td>Composite under page batching</td><td>${f(d.page_score, "", 2)}</td></tr>
+  <tr><td class="sec" colspan="2">Subsets (batch = 1): 1 − NED / CER / EM</td></tr>
+  ${["printed","non_printed","gold","hard","sfx"].map(k => `<tr><td>${S[k].split(",")[0]}</td><td>${f(d.sub.b[k].score, "", 2)} / ${f(d.sub.b[k].cer, "%", 2)} / ${f(d.sub.b[k].em, "%", 1)}</td></tr>`).join("")}
+  <tr><td class="sec" colspan="2">Speed (RTX 3080 Ti)</td></tr>
+  <tr><td>Page latency p50</td><td>${f(d.page_p50, " ms")}</td></tr><tr><td>Per-image latency</td><td>${f(d.lat, " ms")}</td></tr>
+  <tr><td>Max throughput</td><td>${f(d.thr, " img/s")}${d.best_bs ? ` @ b${d.best_bs}` : ""}</td></tr>
+  <tr><td>Memory at max throughput</td><td>${d.best_mem ? f(d.best_mem / 1024, " GB") : "—"}</td></tr><tr><td>Memory at batch 1</td><td>${f(d.vram_bs1 / 1024, " GB", 2)}</td></tr></table>
+  ${d.note ? `<div class="k" style="margin-top:6px">${d.note}</div>` : ""}`;
+  tip.style.display = "block"; move(ev);
+}
+function move(ev){ const r = document.getElementById("chart").getBoundingClientRect(); let x = ev.clientX - r.left + 14, y = ev.clientY - r.top + 14;
+  if (x + tip.offsetWidth > r.width) x = ev.clientX - r.left - tip.offsetWidth - 14; if (y + tip.offsetHeight > r.height) y = Math.max(0, r.height - tip.offsetHeight);
+  tip.style.left = x + "px"; tip.style.top = y + "px"; }
+for (const b of document.querySelectorAll("#xseg button")) b.onclick = () => { sx = b.dataset.x; document.querySelectorAll("#xseg button").forEach(o => o.setAttribute("aria-pressed", o === b)); draw(); };
+for (const b of document.querySelectorAll("#yseg button")) b.onclick = () => { sy = b.dataset.y; document.querySelectorAll("#yseg button").forEach(o => o.setAttribute("aria-pressed", o === b)); draw(); };
+for (const b of document.querySelectorAll("#sseg button")) b.onclick = () => { ss = b.dataset.s; document.querySelectorAll("#sseg button").forEach(o => o.setAttribute("aria-pressed", o === b)); draw(); table(); };
+// table view
+const COLS = [["Model","name"],["Type","arch"],["Params (M)","params_m"],["SCORE","s_score"],["CER","s_cer"],["EM","s_em"],["Page p50 (ms)","page_p50"],["Per-image (ms)","lat"],["Max img/s","thr"]];
+let sortK = "s_score", sortD = -1;
+function table(){ const t = document.getElementById("tbl");
+  for (const d of DATA){ const m = d.sub.b[ss]; d.s_score = m.score; d.s_cer = m.cer; d.s_em = m.em; }
+  const head = k => k === "s_score" ? (ss === "all" ? "Composite" : "1 − NED") : k;
+  const rows = DATA.slice().sort((a, b) => ((a[sortK] ?? -1e9) > (b[sortK] ?? -1e9) ? 1 : -1) * sortD);
+  t.innerHTML = `<caption style="text-align:left;color:var(--ink2);padding-bottom:4px">Accuracy columns: ${S[ss]}, batch = 1 outputs</caption><tr>` + COLS.map(([h, k]) => `<th data-k="${k}">${h === "SCORE" ? head(k) : h}${k === sortK ? (sortD < 0 ? " ↓" : " ↑") : ""}</th>`).join("") + "</tr>" +
+    rows.map(d => "<tr>" + COLS.map(([h, k]) => `<td>${typeof d[k] === "number" ? d[k].toFixed(k === "params_m" || k === "page_p50" || k === "lat" || k === "thr" ? 1 : 2) : (d[k] ?? "—")}</td>`).join("") + "</tr>").join("");
+  t.querySelectorAll("th").forEach(th => th.onclick = () => { const k = th.dataset.k; sortD = k === sortK ? -sortD : -1; sortK = k; table(); }); }
+draw(); table();
+</script></body></html>

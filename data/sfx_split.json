@@ -1,0 +1,18 @@
+{
+ "rule": "SFX set = boxes whose role label (majority of three LLM readers) is sound effect, with page-checked overrides below.",
+ "kept_in_main_despite_sfx_label": {
+  "10266773_18": "ふゆきー: floating name call",
+  "10679419_8": "どっこいしょ: floating spoken phrase",
+  "10461033_14": "じゃーん!!: floating spoken interjection",
+  "10929114_9": "すいすいのすーい: floating spoken chant",
+  "10243775_7": "とーとつ: floating aside with lexical meaning",
+  "10725265_21": "（歓声）: bracketed description"
+ },
+ "moved_to_sfx_despite_other_label": {
+  "10119206_4": "ハッ！ floating with focus lines",
+  "10189638_22": "ぐだぐだ floating mimetic",
+  "10223629_17": "す!? floating",
+  "10621923_2": "メラッ!! floating fire SFX",
+  "10788254_14": "ふんふ〜ん floating humming"
+ }
+}
