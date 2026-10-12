@@ -1,52 +1,69 @@
-# JMangaBench_Read v1.2 — a Japanese manga OCR benchmark
+# JMangaBench_Read v1.3 — a Japanese manga OCR benchmark
 
 [English](README.md) | [中文](README_zh.md) · [Appendix](APPENDIX.md) · [Interactive leaderboard](https://muscgab.github.io/JMangaBench_Read/) · [Dataset (images)](https://huggingface.co/datasets/muscgab/JMangaBench_Read)
 
-JMangaBench_Read evaluates the accuracy and speed of OCR models on text boxes cropped from Japanese manga pages. The main set contains the text a reader reads and a translation pipeline translates: speech, narration and asides. Sound effects are kept in a separate set.
+JMangaBench_Read evaluates the accuracy and speed of OCR models on text boxes cropped from Japanese manga pages. The main set contains the text a reader reads and a translation pipeline translates: speech, narration and asides. Sound effects are excluded.
 
-- Main set: 3,142 text boxes from 732 pages by 732 artists (one page per artist). SFX set: 380 boxes.
-- All pages first posted between 2025-10-01 and 2026-03-10.
-- Labels from three LLM readers and human review (547 main-set boxes human-confirmed).
-- Speed measured per image, per page and at maximum throughput on one RTX 3080 Ti.
+- 7,789 text boxes from 1,847 pages by 1,847 artists (one page per artist).
+- All pages first posted between 2025-10-01 and 2026-10-01.
+- Labels from three LLM readers and human review (1,266 boxes human-confirmed).
+- Speed measured per image, per page and at maximum throughput on one RTX 2080 Ti.
 
 Found an error in a label, a score or the docs? Please [open an issue](https://github.com/muscgab/JMangaBench_Read/issues). Corrections are welcome.
 
+**v1.3 changes.** 4,660 new boxes from 1,116 new pages; 13 v1.2 boxes removed (rules in [Box selection and labeling](#box-selection-and-labeling)); scoring normalization renamed RIN v1 with two added symbol rules; all models re-measured on an RTX 2080 Ti in fp16. The authors used Read v1.2 and 1,021 of the new boxes during model development (see [Development use](#development-use)); scores on the 4,660 new boxes are reported separately in the [appendix](APPENDIX.md#a1-accuracy-by-subset). Full list: [appendix A6](APPENDIX.md#a6-version-history).
+
 ## Leaderboard
 
-Ranked by composite score (defined in [Scoring](#scoring)). Main set, 3,142 boxes, RTX 3080 Ti.
+Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 2080 Ti, fp16.
 
-| # | Model | Arch | Params | Composite ↑ | CER % ↓ | EM % ↑ | Per-image ms ↓ | Per-page ms (p50) ↓ | Max img/s ↑ |
-|---|---|---|---|---|---|---|---|---|---|
-| 1 | Hayai v2.5 Nova p512 | AR | 157M | **96.54** | 2.71 | 87.40 | 102.3 | 205.2 | 84 (b192) |
-| 2 | Hayai v2.5 Nova p384 | AR | 157M | **96.51** | 2.63 | 87.36 | 94.7 | 212.8 | 130 (b192) |
-| 3 | Hayai v2.5 Nova p256 | AR | 157M | **96.49** | 3.08 | 86.28 | 92.0 | 189.3 | 163 (b256) |
-| 4 | Hayai v2.1 | AR | 156M | **95.83** | 2.67 | 86.25 | 91.3 | 189.6 | 143 (b320) |
-| 5 | Preview † | NAR | 196M | **95.55** | 3.21 | 85.30 | 51.1 | 81.5 | 167 (b20) |
-| 6 | PaddleOCR-VL-For-Manga | AR (VLM) | 959M | **94.64** | 2.13 | 87.08 | 253.9 | — | 4.0 (b1) § |
-| 7 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.24** | 3.55 | 82.78 | 27.5 | 56.8 | — |
-| 8 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.13** | 3.50 | 82.46 | 32.5 | 62.6 | 239 (b28) |
-| 9 | LoopNAR-α L1 † ‡ | NAR | 50M | **93.88** | 4.07 | 81.51 | 22.5 | 52.1 | 268 (b24) |
-| 10 | baberuOCR | AR | 113M | **93.54** | 3.89 | 82.65 | 100.9 | 216.2 | 160 (b256) |
-| 11 | mangaOCR | AR | 111M | **90.13** | 5.01 | 78.04 | 66.5 | 206.0 | 46 (b24) |
+| # | Model | Arch | Params | Composite ↑ | CER % ↓ | EM % ↑ | EM NFKC % ↑ | Per-image ms ↓ | Per-page ms (p50) ↓ | Max img/s ↑ |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | mangaocr-nar-small (N4) † | NAR | 54M | **97.26** | 1.73 | 91.09 | 80.34 | 9.1 | 35.5 | 299 (b48) |
+| 2 | Hayai v2.5 Nova p384 | AR | 157M | **96.62** | 2.40 | 88.00 | 75.59 | 54.0 | 252.0 | 175 (b48) |
+| 3 | Hayai v2.5 Nova p256 | AR | 157M | **96.58** | 2.97 | 86.99 | 74.84 | 53.0 | 249.1 | 194 (b40) |
+| 4 | Hayai v2.5 Nova p512 | AR | 157M | **96.56** | 2.37 | 87.91 | 75.27 | 55.4 | 264.4 | 111 (b40) |
+| 5 | Preview † | NAR | 196M | **95.81** | 2.95 | 85.40 | 78.51 | 31.9 | 103.0 | 91 (b16) |
+| 6 | Hayai v2.1 | AR | 156M | **95.44** | 2.70 | 84.49 | 77.99 | 141.7 | 300.6 | 87 (b128) |
+| 7 | PaddleOCR-VL-For-Manga | AR (VLM) | 959M | **94.98** | 2.03 | 87.52 | 53.15 | 366.6 | 1024.4 | 6.6 (b10) |
+| 8 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.72** | 3.33 | 83.62 | 74.09 | 35.6 | 70.8 | 243 (b48) |
+| 9 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.70** | 3.23 | 83.62 | 74.21 | 42.7 | 76.9 | 224 (b48) |
+| 10 | LoopNAR-α L1 † ‡ | NAR | 50M | **94.13** | 3.95 | 81.95 | 72.64 | 29.0 | 63.2 | 259 (b56) |
+| 11 | baberuOCR v1.1 | AR | 113M | **93.34** | 3.66 | 81.60 | 70.89 | 123.6 | 278.3 | 105 (b256) |
+| 12 | mangaOCR | AR | 111M | **90.23** | 4.84 | 78.25 | 67.90 | 84.9 | 242.4 | 42 (b56) |
+| – | GPT-6 Astra * | LLM | — | 99.47 | 0.24 | 98.04 | 93.40 | — | — | — |
+| – | GPT-6.1 Sol * | LLM | — | 99.35 | 0.28 | 97.75 | 97.71 | — | — | — |
+| – | Claude Opus 5.5 * | LLM | — | 98.05 | 0.59 | 95.58 | 88.33 | — | — | — |
+
+<details><summary>More models</summary>
+
+| # | Model | Arch | Params | Composite ↑ | CER % ↓ | EM % ↑ | EM NFKC % ↑ | Per-image ms ↓ | Per-page ms (p50) ↓ | Max img/s ↑ |
+|---|---|---|---|---|---|---|---|---|---|---|
+| – | e4 L3 † § | NAR | 54M | 97.29 | 1.73 | 90.97 | 80.07 | 42.8 | 71.9 | 227 (b32) |
+| – | e4 L2 † § | NAR | 54M | 97.28 | 1.75 | 90.92 | 80.06 | 35.5 | 64.3 | 267 (b48) |
+| – | e4 L1 † § | NAR | 54M | 97.14 | 1.96 | 90.40 | 79.66 | 28.3 | 58.1 | 282 (b24) |
+
+</details>
 
 - † Made by the authors of this benchmark (see [Conflict of interest](#conflict-of-interest)).
-- ‡ Experimental model in development. L1/L2/L3 = number of decoder loops, same weights.
-- § Batched outputs are invalid for this model; measured at batch size 1 only, no per-page result.
-- Accuracy columns use batch-size-1 outputs. Under per-page batching, composite scores change by at most 0.09.
-- Speed was measured on all 3,522 crops (main set and SFX set).
+- ‡ Experimental model, not released. L1/L2/L3 = number of decoder loops, same weights.
+- § e4: the authors' earlier mainline checkpoint (same architecture family as mangaocr-nar-small, 3-loop training), to be released as a reference model. L1/L2/L3 = decoder loops at inference.
+- \* LLM readers. The agreed reading of all three defines 7,005 of the labels (all boxes outside hard), so these rows are listed for reference and are not ranked ([appendix A4](APPENDIX.md#a4-llm-reference-scores-not-ranked)).
+- Accuracy columns use batch-size-1 outputs. Under per-page batching, composite scores change by at most 0.02.
+- EM NFKC: exact match after Unicode NFKC only, for reference. The gap to EM comes mostly from spelling variants that RIN merges (see [Scoring](#scoring)).
 - `bN`: batch size at maximum throughput.
 - Params from the published weight files; mangaOCR estimated from its fp32 file size.
-- Breakdowns by subset, length and role, and scores on the SFX set: [appendix](APPENDIX.md#a1-accuracy-by-subset).
+- Breakdowns by subset, length and role, the speed details and the NFKC results: [appendix](APPENDIX.md).
 
 ### Accuracy vs. speed
 
-Click a chart to open the interactive version (subsets: all / printed / non-printed / gold / hard / SFX set).
+Click a chart to open the interactive version (subsets: all / new / printed / non-printed / gold / hard; e4 under "More models").
 
 [![Composite score vs. per-page latency](figures/pareto_page.png)](https://muscgab.github.io/JMangaBench_Read/)
 
 [![Composite score vs. per-image latency](figures/pareto_image.png)](https://muscgab.github.io/JMangaBench_Read/)
 
-From per-image to per-page inference, time per box drops from 51.1 to 9.8 ms for Preview (NAR) and from 91.3 to 24.2 ms for Hayai v2.1 (AR).
+Reading one page at a time with no wait between pages, the median time per page is 37 ms for mangaocr-nar-small, 245 ms for Hayai v2.5 Nova p384 and 345 ms for Hayai v2.1 ([appendix A2](APPENDIX.md#a2-speed-details)).
 
 ## Data
 
@@ -56,25 +73,27 @@ Black-and-white Japanese comic pages posted publicly online by independent artis
 
 | Rule | Value |
 |---|---|
-| Posting date | 2025-10-01 to 2026-03-10; artwork first published October 2025 or later (estimated from the original post ID) |
-| Artists | one page per artist, 732 artists in the main set |
+| Posting date | 2025-10-01 to 2026-10-01 (v1.2 pages up to 2026-03-10, new pages from 2026-03-10) |
+| Artists | one page per artist, 1,847 artists |
 | Color | black-and-white |
-| Content rating (main set) | general (2,514 boxes), sensitive (628 boxes) |
+| Content rating | general (6,229 boxes), sensitive (1,560 boxes) |
 | Language | Japanese |
 | Excluded artists | those who publicly prohibit reposting or AI use |
 
 ### Overlap with AnimeText
 
-All pages of both sets were checked (739 pages).
+All 1,847 pages were checked by image ID (dataset revisions of 2026-10-04).
 
-- [AnimeText](https://huggingface.co/datasets/deepghs/AnimeText): 0 pages. All 735,060 image IDs (train, valid, test) were checked. Its newest image was posted on 2024-11-23.
-- [animetext-ocr](https://huggingface.co/datasets/JustANormalTinkerer/animetext-ocr): 0 pages. All 496,601 source image IDs were checked.
+- [AnimeText](https://huggingface.co/datasets/deepghs/AnimeText): 0 pages. Its 735,060 image IDs (train, valid, test) range up to 8,475,567, posted on 2024-11-23. The lowest page ID in this benchmark is 10,053,471.
+- [animetext-ocr](https://huggingface.co/datasets/JustANormalTinkerer/animetext-ocr): 0 pages. Its 496,601 source image IDs range up to 8,475,560.
 
 ### Box selection and labeling
 
+Boxes come from one candidate pool. Pages were processed in a fixed order; v1.2 covers the pages up to a cut-off and v1.3 adds the pages after it.
+
 **1. Detection.** AnimeText YOLO12x detector, confidence ≥ 0.425. For nested boxes the smaller box is kept. General pages keep all boxes; sensitive pages keep up to 8 random boxes. Result: about 21,500 candidate boxes on 2,524 pages.
 
-**2. LLM readers.** Each reader worked independently and did not see the other readers' outputs. Total usage: about 66 M input tokens and 5.3 M output tokens.
+**2. LLM readers.** Each reader worked independently and did not see the other readers' outputs. Prompts: [appendix A3](APPENDIX.md#a3-llm-readers).
 
 | Reader | Task | Boxes read |
 |---|---|---|
@@ -90,45 +109,47 @@ All pages of both sets were checked (739 pages).
 - Damaged text: occluded, smeared, faded, blacked out, or heavily cut off.
 - Non-Japanese text.
 
-Sol excluded 866 boxes and marked 634 for review (reasons, non-exclusive: scene text 309, large sound effects 220, cut off 115, signatures 107, large titles 42, ads 36). Astra rejected about 100 more. 284 non-Japanese boxes were removed. Hard-to-read, rare or deformed characters, long text, artistic lettering and low reader confidence are not exclusion criteria. Prompts: [appendix](APPENDIX.md#a3-llm-readers).
+Hard-to-read, rare or deformed characters, long text, artistic lettering and low reader confidence are not exclusion criteria.
 
-**4. Labels.**
+**4. Main-set rules.** Applied to all v1.3 boxes:
 
-| Case | Label | Boxes (main set) |
+| Rule | Removed |
+|---|---|
+| Sound effects and mimetic words drawn outside balloons (majority role label of the three readers; v1.2 page-checked overrides kept) | not in the candidate set |
+| Label contains a voicing mark on a character without a voiced form (e.g. あ゛, ん゛) | 16 (8 from v1.2, 8 new) |
+| Moans or emphasis only, with no lexical content. Candidates: boxes without kanji that contain ♡, a small vowel, ゔ or a doubled character; each candidate judged by a human | 8 (5 from v1.2, 3 new) |
+
+**5. Labels of the new boxes.**
+
+| Case | Label | Boxes |
 |---|---|---|
-| Three readings identical after normalization, no Opus flag | agreed reading | 2,595 |
-| Readings differ (259); readings agree but Opus flagged the box (101); readings differed under an earlier normalization rule (4) | human decision: choose a reading, enter a new one, or drop the box | 364 (hard) |
-| Uniform random sample of agreed boxes, re-checked by a human | 200/200 correct (183 in the main set) | 183 |
+| Three readings identical after normalization, no Opus flag | agreed reading (Sol's spelling) | 4,232 |
+| Readings differ (232 kept); readings agree but Opus flagged the box (151 kept); both (45 kept) | human decision: choose a reading, enter a new one, or drop the box (63 dropped) | 428 (hard) |
+| Uniform random sample of agreed boxes, re-checked by a human | 300/300 correct | (included in the 4,232) |
 
-**5. Page cutoff.** Pages were processed in a fixed order. The release contains all remaining boxes on the 739 pages processed before human review stopped. Boxes whose readings differed only in small kana (e.g. ぁ / あ) were removed automatically.
+v1.2 labels are unchanged. The review interface showed the three LLM readings only, never an OCR model's output.
 
-**6. Main set and SFX set.**
-
-| Set | Content | Boxes |
-|---|---|---|
-| Main | all text inside speech balloons and caption boxes, including interjections and cries (えっ, うわっ, わんわん); text outside balloons with lexical meaning: a called name, a spoken phrase, an author's aside, a bracketed description such as （歓声） | 3,142 |
-| SFX | sound effects and mimetic words drawn on the artwork outside balloons (ズズッ, ぷいっ, わなわな), including screams, panting and whisper marks (ギャア, ゼェゼェ, ひそ) | 380 |
-
-Assignment: the role label (majority of the three readers) marked 381 boxes as sound effects. After checking the page, 6 of them were kept in the main set (lexical text outside balloons) and 5 boxes labeled dialogue or other were moved to the SFX set (effect text outside balloons). The SFX set is scored separately and is not part of the composite.
-
-**Label quality.** 0 errors in 200 audited agreed boxes gives a one-sided 95% upper bound of 1.49% on the agreed-label error rate (Clopper–Pearson), or about 1.2% over all 3,142 main-set labels. A separate check of 100 agreed boxes, stratified by reader confidence, found 0 errors (confirmed verbally, not recorded per box).
+**Label quality.** 0 errors in 300 audited new agreed boxes gives a one-sided 95% upper bound of 0.99% on their error rate (Clopper–Pearson); v1.2's audit gave 0 errors in 200 (bound 1.49%). The 6,523 labels without per-box human confirmation are verified by sampling only.
 
 ### Subsets
 
 | Subset | Definition | Boxes |
 |---|---|---|
-| all | all main-set boxes | 3,142 |
-| hard | readers disagreed or Opus flagged the box; human-decided label | 364 |
-| gold | all human-confirmed boxes (hard + audit) | 547 |
-| printed | majority font label of the three readers is printed | 2,328 |
-| non-printed | handwritten, artistic or mixed | 814 |
-| SFX set | separate set, not in the composite | 380 |
+| all | all boxes | 7,789 |
+| new | boxes added in v1.3 | 4,660 |
+| v1.2 kept | boxes carried over from v1.2 | 3,129 |
+| hard | readers disagreed or Opus flagged the box; human-decided label | 784 |
+| gold | all human-confirmed boxes (hard + random audits of v1.2 and v1.3) | 1,266 |
+| printed | majority font label of the three readers is printed | 5,877 |
+| non-printed | handwritten, artistic or mixed | 1,912 |
 
-Box selection used font quotas with a 40% non-printed target (printed 6,000 / handwritten 3,000 / artistic 1,000). By Sol's font label, the non-printed share is 31.4% in the screened candidate pool (15,877 boxes) and 26.6% in the main set.
+### Development use
+
+The authors used Read v1.2 (3,142 boxes) as a development set for mangaocr-nar-small and its predecessors: model selection, comparisons and error analysis. A second development set, "Sol handwriting" (2,248 boxes from the same candidate pool that GPT-6.1 Sol classified as handwritten, with LLM-reading labels), was used from 2026-10-09 for training-time validation, data and architecture comparisons and error analysis. It shares 1,021 boxes with the v1.3 new boxes: 1,004 of the 1,110 new non-printed boxes and 17 printed boxes. Aggregate statistics measured on the candidate pool, minus the v1.2 pages, informed the design of synthetic training data; those pool pages include the pages of the 4,660 new boxes. The statistics are released in [`docs/pool_stats/`](docs/pool_stats/). No image from the candidate pool or the benchmark was used for training. Scores on the new boxes are in [appendix A1](APPENDIX.md#a1-accuracy-by-subset); their non-printed part largely overlaps the Sol handwriting set.
 
 ## Scoring
 
-Predictions and labels are normalized with the same rules (`r7`):
+Predictions and labels are normalized with the same rules, **RIN v1** (reading-invariant normalization). RIN merges spelling variants that do not change what a reader reads.
 
 | Rule | Example |
 |---|---|
@@ -139,14 +160,17 @@ Predictions and labels are normalized with the same rules (`r7`):
 | wave marks → `〜`; `〜` runs → one `〜` | `～～` → `〜` |
 | quote forms → `"` / `'` | `〝 〟` → `"` |
 | voicing marks unified | `う゛` → `ゔ`, `あ゙` → `あ゛` |
+| compatibility symbols (new in v1.3: `⁇`, `⊠`) | `⁉` → `!?`, `⁇` → `??`, `⊠` → `☒` |
 
-Corner brackets 「」『』 and small kana are kept. Labels use `♡`; `♥` is not mapped.
+Characters, small kana, brackets 「」『』, `〇` / `○` and the presence of a voicing mark are kept. Labels use `♡`; `♥` is not mapped. RIN v1 equals Read v1.2's `r7` plus the two v1.3 symbol rules; no v1.3 label changes between the two.
+
+**Why RIN.** The labels follow the readers' spelling, which varies for the same glyph: `～` in 326 boxes and `〜` in 112, `…` in 1,832 boxes and `・・` runs in 260, `！` in 868 and `!` in 560. A model that writes each symbol one way cannot match all labels without normalization. EM after NFKC alone is listed for reference.
 
 **Metrics**
 
 - CER: total edit distance / total label characters.
 - EM: fraction of boxes with an exact match.
-- Composite (ranking metric), 1 − normalized edit distance as in ICDAR 2019 ReCTS, averaged equally over printed and non-printed main-set boxes:
+- Composite (ranking metric), 1 − normalized edit distance as in ICDAR 2019 ReCTS, averaged equally over printed and non-printed boxes:
 
 $$s_i = 1 - \frac{\mathrm{ED}(p_i, g_i)}{\max(|p_i|, |g_i|)}$$
 
@@ -154,72 +178,79 @@ $$\text{Composite} = 100 \times \tfrac{1}{2}\left(\overline{s}_{\text{printed}} 
 
 ## Speed
 
-One RTX 3080 Ti (12 GB). Each model uses the default precision of its README or code. Images are pre-decoded in memory. Timings include the model's preprocessing and decoding and are GPU-synchronized. All 3,522 crops were used.
+One RTX 2080 Ti (11 GB) per model, all models in fp16 (the card has no fast bf16). Each run is pinned to 8–10 CPU cores of a 2× Xeon Gold 6148 host, with library threads capped at 8; up to four models run at the same time, one per GPU. Images are pre-decoded in memory. Timings include the model's preprocessing and decoding and are GPU-synchronized.
 
 | Measure | Method |
 |---|---|
-| Per-image latency | batch size 1, single process; mean over all crops after warm-up |
-| Per-page latency | 403 batches with sizes drawn from the real per-page box counts (mean 8.7, median 8, p90 15, max 33); single process, preprocessing included; p50 of batch time |
-| Max throughput | 512 crops; preprocessing in 6 worker processes in parallel with the GPU; batch size searched up to 512; median of 3 runs at the best batch size |
+| Per-image latency | batch size 1, single process; mean over all 7,789 crops after warm-up |
+| Per-page latency | 896 batches with sizes drawn from the real per-page box counts (mean 8.7, max 45); single process, preprocessing included; p50 of batch time |
+| Max throughput | 512 crops; preprocessing in 4 worker processes in parallel with the GPU (main process: 3 threads); batch size searched up to the memory limit; median of 3 runs at the best batch size |
+| One page at a time, first crop | [appendix A2](APPENDIX.md#a2-speed-details) |
+
+Read v1.2 was timed on an RTX 3080 Ti with each model's default precision. Speeds of the two versions are not comparable.
+
+After the GPU has been idle for several seconds, the driver lowers its clock and the next request is slower (for Hayai v2.5 Nova p384 51.5 → 81.7 ms on the first crop after 20 s idle). This applies to every model; see [appendix A2](APPENDIX.md#a2-speed-details).
 
 ## Models
 
 | Model | Weights | Settings |
 |---|---|---|
-| Preview † | [muscgab/manga-ocr-nar-preview](https://huggingface.co/muscgab/manga-ocr-nar-preview) | bf16 |
-| LoopNAR-α † | not released | bf16; 1/2/3 decoder loops |
-| Hayai v2.1 | [JustANormalTinkerer/hayai-ocr-v2](https://huggingface.co/JustANormalTinkerer/hayai-ocr-v2) (main branch = v2.1) | 256 patches; greedy; fp16 autocast in model code |
+| mangaocr-nar-small † | to be released | fp16; the inference code released with the model |
+| e4 † | to be released | fp16; 1/2/3 decoder loops |
+| LoopNAR-α † | not released | fp16; 1/2/3 decoder loops |
+| Preview † | [muscgab/manga-ocr-nar-preview](https://huggingface.co/muscgab/manga-ocr-nar-preview) | fp16 |
+| Hayai v2.1 | [JustANormalTinkerer/hayai-ocr-v2](https://huggingface.co/JustANormalTinkerer/hayai-ocr-v2) (main branch = v2.1) | 256 patches; greedy; fp16 |
 | Hayai v2.5 Nova | [JustANormalTinkerer/hayai-ocr-v2.5-nova](https://huggingface.co/JustANormalTinkerer/hayai-ocr-v2.5-nova) | 256 / 384 / 512 patches; otherwise as above |
-| PaddleOCR-VL-For-Manga | [jzhang533/PaddleOCR-VL-For-Manga](https://huggingface.co/jzhang533/PaddleOCR-VL-For-Manga) | bf16; greedy; prompt `OCR:` |
-| baberuOCR | [genshiai-daichi/baberu-ocr](https://huggingface.co/genshiai-daichi/baberu-ocr) | bf16 (CUDA default); README generation defaults |
-| mangaOCR | [kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base) | fp32; package defaults |
+| PaddleOCR-VL-For-Manga | [jzhang533/PaddleOCR-VL-For-Manga](https://huggingface.co/jzhang533/PaddleOCR-VL-For-Manga) | fp16; greedy; prompt `OCR:`; batched with per-image vision attention, at most 16 crops per batch |
+| baberuOCR v1.1 | [genshiai-daichi/baberu-ocr](https://huggingface.co/genshiai-daichi/baberu-ocr) (weights = tag v1.1) | fp16; README generation defaults (up to 256 tokens) |
+| mangaOCR | [kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base) | fp16; package defaults otherwise |
 
-LLM reader scores are listed in the appendix for reference and are not ranked.
+fp16 against fp32 on the same inputs: identical outputs for Preview (260/260), PaddleOCR-VL-For-Manga (65/65) and mangaocr-nar-small (7,788/7,789); LoopNAR-α L3 EM 83.61 (fp16) vs 83.62 (fp32). The other models were not compared.
 
 ## Conflict of interest
 
-Preview and LoopNAR-α are made by the authors of this benchmark.
+mangaocr-nar-small, e4, LoopNAR-α and Preview are made by the authors of this benchmark.
 
 - Labels come from three third-party LLMs and human review. The review interface showed LLM readings only, no OCR model outputs.
-- The box set was fixed before any OCR model was scored. Later changes: v1.1 corrected five labels saved empty by mistake (three relabeled, two removed). v1.2 moved sound effects to a separate set after scores were known; the split uses only box content and position, and the score change of every model is listed in [appendix A6](APPENDIX.md#a6-version-history).
+- Read v1.2 was used during the development of the authors' models ([Development use](#development-use)). 1,021 of the new boxes were in a development set before v1.3 was assembled. Box selection and labels do not use any OCR model output.
 - All model predictions, the scoring script and the speed scripts are released.
 
 ## Limitations
 
-- 2,595 main-set labels are agreed LLM readings verified by sampling only.
+- 6,523 labels are agreed LLM readings verified by sampling only.
 - During human review the majority reading was pre-filled.
 - The hard subset is defined by LLM disagreement and flags.
-- The main/SFX split relies on LLM role labels. Boxes labeled dialogue were screened for sound effects by a text-pattern scan (124 flagged, 17 checked on the page), not one by one.
+- Sound effects were excluded by LLM role labels; boxes labeled dialogue were not checked one by one.
 - Boxes were screened by LLMs; boxes judged unreadable are not included.
-- One source type, recent fan and original works, one GPU.
-- At the max-throughput batch size, outputs match batch-size-1 outputs for 96.9–100% of boxes.
+- One source type (recent fan and original works), one GPU type.
+- At the max-throughput batch size, outputs match batch-size-1 outputs for 99.6–100% of boxes.
 
 ## Usage
 
 ```bash
 pip install regex
 python eval/score.py --pred my_preds.jsonl --name my_model --out results/my_model.json
-python eval/score.py --pred my_preds.jsonl --gt data/gt_sfx.jsonl --name my_model   # SFX set
 ```
 
-`my_preds.jsonl`: one line per box, `{"key": "10053471_0", "pred": "作戦を続行する"}`. Missing keys count as empty predictions. One prediction file can cover both sets.
+`my_preds.jsonl`: one line per box, `{"key": "10053471_0", "pred": "作戦を続行する"}`. Missing keys count as empty predictions.
 
 | Location | Content |
 |---|---|
-| `data/gt.jsonl` | main set: labels and metadata, 3,142 boxes |
-| `data/gt_sfx.jsonl` | SFX set, 380 boxes |
-| `data/llm_readings.jsonl` | three LLM readings per box, both sets |
-| `data/predictions/` | outputs of all listed models on both sets (batch size 1 and per-page) |
-| `eval/` | scoring script and normalization code |
-| [Hugging Face](https://huggingface.co/datasets/muscgab/JMangaBench_Read) | crop images at original resolution: `main/<key>.png` (split `test`), `sfx/<key>.png` (split `sfx`) |
+| `data/gt.jsonl` | labels and metadata, 7,789 boxes |
+| `data/llm_readings.jsonl` | three LLM readings per box |
+| `data/predictions/` | outputs of all listed models (batch size 1 and per-page) |
+| `data/gt_sfx.jsonl` | v1.2 SFX set (380 boxes), unchanged and not rescored in v1.3 |
+| `eval/` | scoring script and RIN normalization code |
+| `speed/` | speed scripts |
+| [Hugging Face](https://huggingface.co/datasets/muscgab/JMangaBench_Read) | crop images at original resolution: `main/<key>.png` (split `test`) |
 
-`gt.jsonl` fields: `key`, `file`, `text`, `text_r7`, `n_chars`, `gold`, `gold_hard`, `gold_random_audit`, `printed`, `non_printed`, `font`, `role`, `orientation`, `crop_wh`, `page_id`, `box`, `rating`.
+`gt.jsonl` fields: `key`, `file`, `text`, `text_rin`, `n_chars`, `gold`, `gold_hard`, `gold_random_audit`, `printed`, `non_printed`, `font`, `role`, `orientation`, `crop_wh`, `page_id`, `box`, `rating`, `origin` (`v1.2` / `new`), `review`.
 
 For evaluation only. Do not use for training.
 
 ## Corrections
 
-If you find any error (a wrong label, a box that should be in the other set, a scoring or speed problem), please [open an issue](https://github.com/muscgab/JMangaBench_Read/issues). Fixes go into the next version and are listed in [appendix A6](APPENDIX.md#a6-version-history).
+If you find any error (a wrong label, a box that should not be in the set, a scoring or speed problem), please [open an issue](https://github.com/muscgab/JMangaBench_Read/issues). Fixes go into the next version and are listed in [appendix A6](APPENDIX.md#a6-version-history).
 
 ## License
 

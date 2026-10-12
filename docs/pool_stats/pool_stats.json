@@ -1,0 +1,465 @@
+{
+ "pool": "GPT-6.1 Sol keep decisions on the 2,524-page candidate pool, minus Read v1.2 pages, minus role=sfx. Printed 8,887 boxes, non-printed 2,516 boxes. The pages of the Read v1.3 new boxes are part of this pool.",
+ "printed_generator": {
+  "used_as": "audit targets for the printed (one-click) generator's output distribution; a bin passes when |observed - target| / target <= 0.10 (bins with expected count >= 200)",
+  "crop_long_edge_px_percent": {
+   "0–31 px": 0.12,
+   "32–47 px": 0.64,
+   "48–79 px": 3.58,
+   "80–111 px": 7.04,
+   "112–159 px": 14.13,
+   "160–223 px": 18.25,
+   "224–319 px": 20.18,
+   "320–479 px": 18.32,
+   "480–639 px": 8.28,
+   "≥640 px": 9.45
+  },
+  "crop_aspect_ratio_percent": {
+   "[1,1.5)": 8.83,
+   "[1.5,2.5)": 34.95,
+   "[2.5,4)": 36.87,
+   "[4,6)": 13.94,
+   "[6,10)": 4.62,
+   "[10,16)": 0.74,
+   "≥16": 0.03
+  },
+  "n_boxes": 8887
+ },
+ "handwriting_generator": {
+  "length_bins": {
+   "measured": "non-printed label length 1-4 / 5-8 / 9-16 / 17-32 / >32 = 43.1 / 29.0 / 19.7 / 7.5 / 0.7 %",
+   "config_weights": [
+    {
+     "name": "1_4",
+     "min": 1,
+     "max": 4,
+     "weight": 0.434
+    },
+    {
+     "name": "5_8",
+     "min": 5,
+     "max": 8,
+     "weight": 0.292
+    },
+    {
+     "name": "9_16",
+     "min": 9,
+     "max": 16,
+     "weight": 0.1984
+    },
+    {
+     "name": "17_32",
+     "min": 17,
+     "max": 32,
+     "weight": 0.0755
+    }
+   ],
+   "note": ">32 dropped and the rest renormalized"
+  },
+  "font_height_bins": {
+   "measured_crop_scale_percentiles_px": {
+    "1": 16.9,
+    "5": 22.3,
+    "10": 26.4,
+    "25": 36.8,
+    "50": 52.2,
+    "75": 78.4,
+    "90": 121.3,
+    "95": 155.2,
+    "99": 260.0
+   },
+   "scale_definition": "sqrt(crop height * crop width / characters), non-printed",
+   "requested_px_per_scale_px": 1.563,
+   "config_weights": [
+    {
+     "name": "8_9",
+     "min": 8,
+     "max": 9,
+     "weight": 0.0016
+    },
+    {
+     "name": "9_10",
+     "min": 9,
+     "max": 10,
+     "weight": 0.0036
+    },
+    {
+     "name": "10_12",
+     "min": 10,
+     "max": 12,
+     "weight": 0.0155
+    },
+    {
+     "name": "12_13",
+     "min": 12,
+     "max": 13,
+     "weight": 0.0131
+    },
+    {
+     "name": "13_15",
+     "min": 13,
+     "max": 15,
+     "weight": 0.0254
+    },
+    {
+     "name": "15_18",
+     "min": 15,
+     "max": 18,
+     "weight": 0.0628
+    },
+    {
+     "name": "18_21",
+     "min": 18,
+     "max": 21,
+     "weight": 0.0703
+    },
+    {
+     "name": "21_24",
+     "min": 21,
+     "max": 24,
+     "weight": 0.0668
+    },
+    {
+     "name": "24_28",
+     "min": 24,
+     "max": 28,
+     "weight": 0.1057
+    },
+    {
+     "name": "28_33",
+     "min": 28,
+     "max": 33,
+     "weight": 0.13
+    },
+    {
+     "name": "33_38",
+     "min": 33,
+     "max": 38,
+     "weight": 0.0958
+    },
+    {
+     "name": "38_45",
+     "min": 38,
+     "max": 45,
+     "weight": 0.1002
+    },
+    {
+     "name": "45_55",
+     "min": 45,
+     "max": 55,
+     "weight": 0.1014
+    },
+    {
+     "name": "55_70",
+     "min": 55,
+     "max": 70,
+     "weight": 0.0819
+    },
+    {
+     "name": "70_85",
+     "min": 70,
+     "max": 85,
+     "weight": 0.0437
+    },
+    {
+     "name": "85_96",
+     "min": 85,
+     "max": 96,
+     "weight": 0.0823
+    }
+   ]
+  },
+  "ink": {
+   "measured_nonprinted": {
+    "n": 2516,
+    "black": {
+     "median": 0.0356,
+     "p10": 0.0,
+     "p90": 0.1651
+    },
+    "p1": {
+     "median": 0.0,
+     "p10": 0.0,
+     "p90": 52.0
+    },
+    "dark": {
+     "median": 0.0919,
+     "p10": 0.0169,
+     "p90": 0.2446
+    },
+    "frac_with_black": 0.813
+   },
+   "definitions": "black = share of pixels with luma <= 2; p1 = 1st-percentile luma; dark = share < 60; frac_with_black = share of crops with any pure-black pixel",
+   "config_dark_ink_luma_mixture_percent": [
+    [
+     87.0,
+     [
+      0,
+      0
+     ]
+    ],
+    [
+     3.1,
+     [
+      3,
+      10
+     ]
+    ],
+    [
+     3.5,
+     [
+      11,
+      20
+     ]
+    ],
+    [
+     3.7,
+     [
+      21,
+      35
+     ]
+    ],
+    [
+     2.7,
+     [
+      36,
+      50
+     ]
+    ]
+   ]
+  },
+  "page_encoding": {
+   "measured": "1,721 source pages: JPEG 77 %, PNG 23 %; IJG-matched quality of 853 JPEGs: ~100 56 %, ~85 30 %, 90-95 11 %, <=80 4 %",
+   "config_png_probability": 0.23,
+   "config_jpeg_quality_mixture": [
+    [
+     0.56,
+     [
+      96,
+      100
+     ]
+    ],
+    [
+     0.3,
+     [
+      84,
+      88
+     ]
+    ],
+    [
+     0.11,
+     [
+      89,
+      95
+     ]
+    ],
+    [
+     0.03,
+     [
+      60,
+      83
+     ]
+    ]
+   ]
+  },
+  "balloon_outline": {
+   "measured": {
+    "sol_nonprinted": {
+     "n": 2516,
+     "visible_edge": 1452,
+     "visible_share": 0.577,
+     "ring_dark_bins_<.2/.2-.4/.4-.6/>=.6": [
+      10.6,
+      10.5,
+      16.6,
+      62.3
+     ],
+     "median": 0.694
+    },
+    "sol_printed": {
+     "n": 1500,
+     "visible_edge": 379,
+     "visible_share": 0.253,
+     "ring_dark_bins_<.2/.2-.4/.4-.6/>=.6": [
+      12.4,
+      6.9,
+      11.9,
+      68.9
+     ],
+     "median": 0.754
+    }
+   },
+   "definition": "ring_dark = share of pixels with gray < 90 in a 3 px ring just outside the white text region; visible_edge = crops where that ring is inside the crop",
+   "used_as": "probability of restricting balloon assets to outlined (black-edged or black-filled) ones",
+   "config_probability": 0.75
+  },
+  "outside_text_region": {
+   "measured": {
+    "sol_nonprinted": {
+     "<1%": 0.437,
+     "1-10%": 0.32,
+     "10-30%": 0.134,
+     ">=30%": 0.109
+    },
+    "sol_printed": {
+     "<1%": 0.772,
+     "1-10%": 0.149,
+     "10-30%": 0.028,
+     ">=30%": 0.051
+    }
+   },
+   "definition": "share of the crop outside the white region holding the text (balloon edge, art, screen tone); bins <1 % / 1-10 % / 10-30 % / >=30 %",
+   "used_as": "probability of fitting the balloon tightly around the text, chosen by comparing synthetic runs with the non-printed distribution",
+   "config_probability": 0.1
+  }
+ },
+ "reference_only": {
+  "note": "measured and compared with synthetic outputs during review; no generator parameter was set from these",
+  "imaging_cues": {
+   "sol_nonprinted": {
+    "n": 2516,
+    "black": {
+     "median": 0.0356,
+     "p10": 0.0,
+     "p90": 0.1651
+    },
+    "p1": {
+     "median": 0.0,
+     "p10": 0.0,
+     "p90": 52.0
+    },
+    "dark": {
+     "median": 0.0919,
+     "p10": 0.0169,
+     "p90": 0.2446
+    },
+    "white255": {
+     "median": 0.6503,
+     "p10": 0.0559,
+     "p90": 0.8517
+    },
+    "paper_std": {
+     "median": 6.0807,
+     "p10": 3.1959,
+     "p90": 12.4409
+    },
+    "flat_res": {
+     "median": 0.1878,
+     "p10": 0.0006,
+     "p90": 0.9806
+    },
+    "scale": {
+     "median": 3.9551,
+     "p10": 3.2743,
+     "p90": 4.7982
+    },
+    "frac_with_black": 0.813
+   },
+   "sol_printed": {
+    "n": 800,
+    "black": {
+     "median": 0.0607,
+     "p10": 0.0028,
+     "p90": 0.1546
+    },
+    "p1": {
+     "median": 0.0,
+     "p10": 0.0,
+     "p90": 5.0
+    },
+    "dark": {
+     "median": 0.1063,
+     "p10": 0.0602,
+     "p90": 0.1963
+    },
+    "white255": {
+     "median": 0.7006,
+     "p10": 0.1586,
+     "p90": 0.8495
+    },
+    "paper_std": {
+     "median": 5.6291,
+     "p10": 2.5925,
+     "p90": 10.0679
+    },
+    "flat_res": {
+     "median": 0.0946,
+     "p10": 0.0,
+     "p90": 0.6388
+    },
+    "scale": {
+     "median": 3.8002,
+     "p10": 3.0652,
+     "p90": 4.7402
+    },
+    "frac_with_black": 0.945
+   }
+  },
+  "text_features": {
+   "sol_all_fonts": {
+    "rows": 11293,
+    "mean_len": 11.18,
+    "median_len": 9,
+    "len_bins_pct": {
+     "1-2": 6.8,
+     "3-4": 16.37,
+     "5-8": 23.46,
+     "9-16": 32.07,
+     "17-32": 19.13,
+     "33-64": 2.06,
+     "65+": 0.11
+    },
+    "kanji_char_share_pct": 19.35,
+    "alnum_rows_pct": 3.03,
+    "punct_only_pct": 1.11,
+    "kana_only_pct": 34.9,
+    "unique_text_pct": 92.48
+   },
+   "sol_printed": {
+    "rows": 8797,
+    "mean_len": 12.25,
+    "median_len": 11,
+    "len_bins_pct": {
+     "1-2": 5.3,
+     "3-4": 12.66,
+     "5-8": 21.66,
+     "9-16": 35.39,
+     "17-32": 22.42,
+     "33-64": 2.44,
+     "65+": 0.14
+    },
+    "kanji_char_share_pct": 20.23,
+    "alnum_rows_pct": 2.93,
+    "punct_only_pct": 0.98,
+    "kana_only_pct": 28.51,
+    "unique_text_pct": 95.12
+   },
+   "sol_nonprinted": {
+    "rows": 2496,
+    "mean_len": 7.39,
+    "median_len": 5,
+    "len_bins_pct": {
+     "1-2": 12.1,
+     "3-4": 29.45,
+     "5-8": 29.81,
+     "9-16": 20.39,
+     "17-32": 7.53,
+     "33-64": 0.72,
+     "65+": 0.0
+    },
+    "kanji_char_share_pct": 14.2,
+    "alnum_rows_pct": 3.37,
+    "punct_only_pct": 1.56,
+    "kana_only_pct": 57.41,
+    "unique_text_pct": 89.22
+   }
+  },
+  "other_checks": [
+   "classifier two-sample test (CNN, real vs synthetic)",
+   "within-image pen-width spread",
+   "text margins inside the crop",
+   "line-break positions inside words",
+   "punctuation-free and kana-only shares"
+  ]
+ }
+}

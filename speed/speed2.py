@@ -1,13 +1,13 @@
-"""吞吐测试 v2（2026-10-03 用户同意）：预处理与 GPU 推理并行，batch 两段搜索取最大吞吐。
-用法：python speed2.py MODEL [--check N]
-- 每个模型拆成 prep（CPU：各模型自带的预处理，返回 numpy）与 infer（GPU 推理 + 解码）。
-- 预处理由 fork 出的 WORKERS 个进程（各 1 线程）提前做；主进程 torch 线程数 MAIN_THREADS；合计不超过容器 10 核。
-  进程池在加载 GPU 模型之前创建（子进程不碰 CUDA），整个模型测试期间复用，不把启动开销算进吞吐。
-- 搜索同 run_eval：粗搜翻倍至 OOM 或连续两档下降 → 细搜 [B/2,2B] 步长 B/4，B 与细搜点 3 次取中位数；
-  每点记录吞吐、峰值显存（allocated/reserved）、GPU 利用率均值（nvidia-smi 200 ms 采样）、与 batch=1 输出一致率；
-  每个满 batch 的推理耗时（含解码，p50/p90/max，末尾不满的 batch 不计）；主循环等预处理的时间占比 prep_wait_frac（>0 说明 CPU 跟不上）。
-- --check N：先用前 N 张核对 prep+infer 的 batch=1 输出与 preds/MODEL.jsonl 完全一致（保证拆分没改变模型行为）。
-结果 results/MODEL_speed2.json。"""
+"""Read v1.3 max-throughput test (user 2026-10-11, AutoDL RTX 3060, CPU quota 7 cores): python speed2.py MODEL [--check N]
+Same method as the 2026-10-03 speed2: CPU preprocessing (each model's own) in a fork pool ahead of the GPU, batch search
+(coarse doubling to OOM or two drops, then fine [B/2,2B] step B/4, 3 reps median) on a fixed 512-crop subset (seed 0);
+per point: throughput, peak memory, GPU utilisation, per full-batch latency, prep_wait_frac, agreement with batch=1.
+Workers 4 + main 3 threads (container quota 7 cores). --check N: first N crops' prep+infer bs=1 output must equal preds/MODEL.jsonl.
+Result results/MODEL_speed2.json."""
+# sailgpu2 fp16 rerun (user 2026-10-12: "你就在这台sailgpu上面测试，每一个gpu测试一个，可以并行来跑；都跑fp16先看能不能跑"):
+# copy of v13_20261011/remote/*; ROOT from env BENCH_ROOT (default /home/clx/bench_v13); BENCH_FP16=1 (default) casts the
+# rival models to fp16 (10-11: Hayai/mangaOCR fp32, baberu bf16); e4 stays fp16 autocast; new n4_L1 = formal_fp32_N4 final,
+# fp16-reparametrised (fp16_20261012/fp16_convert.reparam, k=[1,1,16,1], c=1/4, eps*c^2), fp16 autocast.
 import argparse, json, os, random, subprocess, sys, threading, time
 os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com"); os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 from pathlib import Path
@@ -16,36 +16,15 @@ import numpy as np
 import torch
 from PIL import Image
 
-ROOT = Path("/root/autodl-tmp/eval_v1"); BUNDLE = ROOT / "v1_eval_bundle"; MODELS = ROOT / "models"
-WORKERS, MAIN_THREADS = 6, 3
+ROOT = Path(os.environ.get("BENCH_ROOT", "/home/clx/bench_v13")); BUNDLE = ROOT / "bundle"; MODELS = ROOT / "models"
+FP16 = os.environ.get("BENCH_FP16", "1") == "1"
+WORKERS, MAIN_THREADS = 4, 3
 IMGS, PREP = {}, None
 
 def to_np(d): return {k: (v.numpy() if isinstance(v, torch.Tensor) else v) for k, v in d.items()}
 def to_cuda(d): return {k: (torch.from_numpy(v).cuda(non_blocking=True) if isinstance(v, np.ndarray) else v) for k, v in d.items()}
 
 # ---------------- adapters：返回 (build_prep, build_infer)；build_prep 只建 CPU 对象 ----------------
-def preview():
-    d = MODELS / "preview"; sys.path.insert(0, str(d))
-    def build_prep():
-        from manga_ocr_nar.model import make_image_processor
-        c = json.loads((d / "model_manifest.json").read_text())["contract"]
-        proc = make_image_processor(min_pixels=int(c["image_min_pixels"]), max_pixels=int(c["image_max_pixels"]))
-        return lambda imgs: to_np(dict(proc(images=[i.convert("RGB") for i in imgs], return_tensors="pt")))
-    def build_infer():
-        from manga_ocr_nar.inference import MangaOCRNar
-        from manga_ocr_nar.model import EOS_ID
-        m = MangaOCRNar(d, device="cuda", precision="auto")
-        @torch.inference_mode()
-        def infer(x):
-            logits = m.runner(torch.from_numpy(x["pixel_values"]).to(device=m.device, dtype=m.dtype), torch.from_numpy(x["image_grid_thw"]))["logits"]
-            out = []
-            for ids in logits.argmax(-1).cpu().tolist():
-                if EOS_ID in ids: ids = ids[: ids.index(EOS_ID)]
-                out.append("".join(m.characters[i] for i in ids if 0 <= i < EOS_ID))
-            return out
-        return infer
-    return build_prep, build_infer
-
 def hayai(sub, patches):
     def f():
         def build_prep():
@@ -55,10 +34,12 @@ def hayai(sub, patches):
         def build_infer():
             from transformers import AutoModel, PreTrainedTokenizerFast
             model = AutoModel.from_pretrained(MODELS / sub, trust_remote_code=True).cuda().eval()
+            if FP16: model = model.half()
             tok = PreTrainedTokenizerFast.from_pretrained(MODELS / sub)
             @torch.inference_mode()
             def infer(x):
                 x = to_cuda(x)
+                if FP16: x["pixel_values"] = x["pixel_values"].half()
                 return list(model.generate(pixel_values=x["pixel_values"], pixel_attention_mask=x["pixel_attention_mask"], spatial_shapes=x["spatial_shapes"],
                                            tokenizer=tok, max_new_tokens=128, repetition_penalty=1.0))
             return infer
@@ -78,9 +59,11 @@ def baberu():
         from transformers import LogitsProcessorList
         bi.build_ocr_image_processor = lambda name="": make_proc()
         ocr = bi.BaberuOCR(d, device="cuda")
+        if FP16: ocr.model.half()
+        dt = next(ocr.model.parameters()).dtype
         @torch.inference_mode()
         def infer(x):
-            pv = torch.from_numpy(x["pixel_values"]).to(ocr.device)
+            pv = torch.from_numpy(x["pixel_values"]).to(ocr.device, dt)
             ids = torch.full((pv.shape[0], 1), ocr.tok.bos_token_id, device=ocr.device)
             out = ocr.model.generate(input_ids=ids, pixel_values=pv, max_new_tokens=128, do_sample=False, repetition_penalty=1.2,
                                      logits_processor=LogitsProcessorList([bi.CapContentRun(ocr._content_ids, 12)]),
@@ -98,75 +81,80 @@ def manga_ocr():
     def build_infer():
         from manga_ocr.ocr import post_process
         from transformers import AutoTokenizer, VisionEncoderDecoderModel
+        import transformers.modeling_utils as _mu; _mu.check_torch_load_is_safe = lambda: None  # official kha-white pytorch_model.bin; transformers 4.57 refuses torch.load on torch<2.6 (CVE-2025-32434); still weights_only=True
         tok = AutoTokenizer.from_pretrained(d); model = VisionEncoderDecoderModel.from_pretrained(d).cuda().eval()
+        if FP16: model = model.half()
         @torch.inference_mode()
         def infer(x):
-            out = model.generate(torch.from_numpy(x["pixel_values"]).cuda(), max_length=300)
+            pv = torch.from_numpy(x["pixel_values"]).cuda()
+            out = model.generate(pv.half() if FP16 else pv, max_length=300)
             return [post_process(tok.decode(r, skip_special_tokens=True)) for r in out.cpu()]
         return infer
     return build_prep, build_infer
 
-def paddle():
-    d = MODELS / "paddleocr_vl_manga"
-    def make_proc():
-        from transformers import AutoProcessor
-        p = AutoProcessor.from_pretrained(d, trust_remote_code=True, use_fast=True); p.tokenizer.padding_side = "left"; return p
+def e4(loops):
+    def f():
+        import e4_adapter as EA
+        def build_infer():
+            inf = EA.build(loops); return inf
+        return (lambda: EA.prep), build_infer
+    return f
+
+def preview():
+    """Preview release (2026-10-12 23:xx), precision PREVIEW_PREC (default fp16; fp16 == fp32 on 260/260 crops)."""
+    d = MODELS / "preview"; sys.path.insert(0, str(d))
     def build_prep():
-        proc = make_proc()
-        def prep(imgs):
-            imgs = [i.convert("RGB") for i in imgs]
-            msgs = [[{"role": "user", "content": [{"type": "image", "image": im}, {"type": "text", "text": "OCR:"}]}] for im in imgs]
-            texts = proc.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)
-            return to_np(dict(proc(text=texts, images=[[im] for im in imgs], return_tensors="pt", padding=True)))
-        return prep
+        from manga_ocr_nar.model import make_image_processor
+        c = json.loads((d / "model_manifest.json").read_text(encoding="utf-8"))["contract"]
+        proc = make_image_processor(min_pixels=int(c["image_min_pixels"]), max_pixels=int(c["image_max_pixels"]))
+        return lambda imgs: to_np(dict(proc(images=[i.convert("RGB") for i in imgs], return_tensors="pt")))
     def build_infer():
-        from transformers import AutoModelForCausalLM
-        try:
-            import flash_attn  # noqa: F401
-            attn = "flash_attention_2"
-        except ImportError:
-            attn = "sdpa"
-        model = AutoModelForCausalLM.from_pretrained(d, trust_remote_code=True, torch_dtype=torch.bfloat16, attn_implementation=attn).cuda().eval()
-        proc = make_proc()
-        if model.generation_config.pad_token_id is None: model.generation_config.pad_token_id = proc.tokenizer.eos_token_id
+        from manga_ocr_nar.inference import MangaOCRNar
+        from manga_ocr_nar.model import EOS_ID
+        m = MangaOCRNar(d, device="cuda", precision=os.environ.get("PREVIEW_PREC", "fp16"))
         @torch.inference_mode()
         def infer(x):
-            x = to_cuda(x)
-            g = model.generate(**x, max_new_tokens=512, do_sample=False, use_cache=True)
-            return proc.batch_decode(g[:, x["input_ids"].shape[1]:], skip_special_tokens=True)
+            logits = m.runner(torch.from_numpy(x["pixel_values"]).to(device=m.device, dtype=m.dtype), torch.from_numpy(x["image_grid_thw"]))["logits"]
+            out = []
+            for ids in logits.argmax(-1).cpu().tolist():
+                if EOS_ID in ids: ids = ids[: ids.index(EOS_ID)]
+                out.append("".join(m.characters[i] for i in ids if 0 <= i < EOS_ID))
+            return out
         return infer
     return build_prep, build_infer
 
-def dreco(sub, module, cls):
-    def f():
-        d = MODELS / sub
-        def build_prep():
-            def prep(imgs):
-                arr = [np.asarray(i.convert("RGB"))[..., ::-1] for i in imgs]
-                H = max(a.shape[0] for a in arr); W = max(a.shape[1] for a in arr)
-                batch = np.zeros((len(arr), H, W, 3), dtype=np.uint8)
-                for k, a in enumerate(arr): batch[k, : a.shape[0], : a.shape[1]] = a
-                return {"images": np.ascontiguousarray(batch.transpose(0, 3, 1, 2)), "sizes": np.array([[a.shape[0], a.shape[1]] for a in arr], dtype=np.int64)}
-            return prep
-        def build_infer():
-            sys.path.insert(0, str(d)); OCR = getattr(__import__(module), cls); ocr = OCR.from_pretrained(device="cuda")
-            @torch.inference_mode()
-            def infer(x):
-                return ocr.decode(ocr.forward_gpu(torch.from_numpy(x["images"]).cuda(), torch.from_numpy(x["sizes"]).cuda()))
-            return infer
-        return build_prep, build_infer
-    return f
+def paddle():
+    """PaddleOCR-VL-For-Manga, fixed batch path (paddle_batch.py); PYTHONPATH with transformers 4.55.4, PADDLE_DIR, PADDLE_DTYPE."""
+    import paddle_batch as PB
+    def build_prep():
+        return lambda imgs: to_np(PB.prep([i.convert("RGB") for i in imgs]))
+    def build_infer():
+        infer = PB.load()
+        return lambda x: infer({k: (torch.from_numpy(v) if isinstance(v, np.ndarray) else v) for k, v in x.items()})
+    return build_prep, build_infer
 
-def looped(loops, dtype):  # 2026-10-04 补测 looped 试验模型，见 looped_adapter.py
+def looped(loops):  # LoopNAR-α (looped_v1), see looped_adapter.py
     def f():
         import looped_adapter as LA
-        return (lambda: LA.prep), (lambda: LA.build(loops, dtype))
+        return (lambda: LA.prep), (lambda: LA.build(loops, os.environ.get("LOOPNAR_DTYPE", "fp16")))
     return f
 
-ADAPTERS = {"preview": preview, "hayai_v2": hayai("hayai_v2", 256), "hayai_nova_p256": hayai("hayai_nova", 256), "hayai_nova_p384": hayai("hayai_nova", 384),
-            "hayai_nova_p512": hayai("hayai_nova", 512), "baberu": baberu, "manga_ocr": manga_ocr, "paddleocr_vl_manga": paddle,
-            "mangadreco": dreco("mangadreco", "manga_dreco", "MangaDReCo"), "mangadrec": dreco("mangadrec", "manga_drec", "MangaDReC"),
-            "looped_L3_fp32": looped(3, "fp32"), "looped_L3_bf16": looped(3, "bf16"), "looped_L1_bf16": looped(1, "bf16")}
+def n4():
+    import e4_adapter as EA
+    return (lambda: EA.prep), EA.build_n4
+
+def n4g():
+    import e4_adapter as EA
+    return (lambda: EA.prep), EA.build_n4_graph
+
+def n4p():  # release decoupled path: CPU prep = decode to uint8 only, everything else on the GPU
+    import e4_adapter as EA
+    return (lambda: (lambda imgs: [np.asarray(i.convert("RGB")) for i in imgs])), EA.build_n4_pipe
+
+ADAPTERS = {"n4p_L1": n4p, "n4g_L1": n4g, "n4_L1": n4, "e4_L1": e4(1), "e4_L2": e4(2), "e4_L3": e4(3), "hayai_v2": hayai("hayai_v2", 256), "hayai_nova_p256": hayai("hayai_nova", 256),
+            "hayai_nova_p384": hayai("hayai_nova", 384), "hayai_nova_p512": hayai("hayai_nova", 512), "baberu": baberu, "manga_ocr": manga_ocr,
+            "preview": preview, "paddleocr_vl_manga": paddle,
+            "loopnar_a_L1": looped(1), "loopnar_a_L2": looped(2), "loopnar_a_L3": looped(3)}
 
 def _worker_init():
     torch.set_num_threads(1)
