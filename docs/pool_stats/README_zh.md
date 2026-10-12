@@ -2,7 +2,7 @@
 
 [English](README.md) | [中文](README_zh.md) · [返回 README](../../README_zh.md)
 
-mangaocr-nar-small 的合成训练数据在设计时参考了在本评测集候选池上测得的汇总统计。本页列出这些统计，数值见 [`pool_stats.json`](pool_stats.json)，不含逐框数据。
+MangaOCR-Nar-Small 的合成训练数据在设计时参考了在本评测集候选池上测得的汇总统计。本页列出这些统计，数值见 [`pool_stats.json`](pool_stats.json)，不含逐框数据。
 
 **统计范围**：GPT-6.1 Sol 在 2,524 个候选页初筛中保留的框，去掉 Read v1.2 的页面，再去掉标为拟声词的框。印刷 8,887 框，非印刷 2,516 框。Read v1.3 4,660 个新框所在的页面包含在内。统计测于 2026-10-07 至 2026-10-09。
 

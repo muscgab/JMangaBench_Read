@@ -2,7 +2,7 @@
 
 [English](README.md) | [中文](README_zh.md) · [Back to README](../../README.md)
 
-The synthetic training data of mangaocr-nar-small was designed with aggregate statistics measured on the benchmark's candidate pool. This page lists them. Values are in [`pool_stats.json`](pool_stats.json); no per-box data is included.
+The synthetic training data of MangaOCR-Nar-Small was designed with aggregate statistics measured on the benchmark's candidate pool. This page lists them. Values are in [`pool_stats.json`](pool_stats.json); no per-box data is included.
 
 **Pool**: boxes that GPT-6.1 Sol kept in its first screening of the 2,524 candidate pages, minus the pages in Read v1.2, minus boxes labeled SFX. 8,887 printed and 2,516 non-printed boxes. The pages of the 4,660 Read v1.3 new boxes are part of this pool. Statistics were measured between 2026-10-07 and 2026-10-09.
 

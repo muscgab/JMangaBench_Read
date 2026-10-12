@@ -24,7 +24,7 @@ All numbers use batch = 1 outputs. CER, EM and 1-NED are computed after RIN v1 n
 
 | Model | All (7,789) | New (4,660) | v1.2 kept (3,129) | Hard (784) | Gold (1,266) | Non-printed (1,912) | Printed (5,877) | 1–4 ch (1,504) | 5–16 ch (4,675) | 17–32 ch (1,441) | >32 ch (169) | Vertical (7,158) | Horizontal (439) | Dialogue (6,948) | Narration (504) | Other (331) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| mangaocr-nar-small | 1.73 | 1.64 | 1.89 | 7.14 | 4.83 | 4.14 | 1.24 | 3.28 | 1.42 | 0.86 | 6.42 | 1.34 | 7.61 | 1.38 | 1.57 | 9.96 |
+| MangaOCR-Nar-Small | 1.73 | 1.64 | 1.89 | 7.14 | 4.83 | 4.14 | 1.24 | 3.28 | 1.42 | 0.86 | 6.42 | 1.34 | 7.61 | 1.38 | 1.57 | 9.96 |
 | Hayai v2.5 Nova p384 | 2.40 | 2.29 | 2.57 | 8.92 | 6.47 | 5.08 | 1.84 | 4.18 | 1.76 | 1.38 | 9.57 | 1.99 | 7.89 | 2.11 | 1.88 | 9.79 |
 | Hayai v2.5 Nova p256 | 2.97 | 2.95 | 2.99 | 10.66 | 7.43 | 5.26 | 2.49 | 3.99 | 1.79 | 1.42 | 16.27 | 2.30 | 11.74 | 2.40 | 3.80 | 13.90 |
 | Hayai v2.5 Nova p512 | 2.37 | 2.18 | 2.65 | 8.83 | 5.90 | 5.76 | 1.67 | 4.14 | 1.96 | 1.59 | 7.11 | 2.06 | 6.96 | 2.13 | 1.88 | 8.51 |
@@ -47,7 +47,7 @@ All numbers use batch = 1 outputs. CER, EM and 1-NED are computed after RIN v1 n
 
 | Model | All (7,789) | New (4,660) | v1.2 kept (3,129) | Hard (784) | Gold (1,266) | Non-printed (1,912) | Printed (5,877) | 1–4 ch (1,504) | 5–16 ch (4,675) | 17–32 ch (1,441) | >32 ch (169) | Vertical (7,158) | Horizontal (439) | Dialogue (6,948) | Narration (504) | Other (331) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| mangaocr-nar-small | 91.09 | 91.35 | 90.70 | 70.92 | 80.17 | 80.81 | 94.44 | 91.76 | 91.32 | 91.67 | 73.96 | 91.59 | 84.51 | 91.55 | 92.26 | 80.06 |
+| MangaOCR-Nar-Small | 91.09 | 91.35 | 90.70 | 70.92 | 80.17 | 80.81 | 94.44 | 91.76 | 91.32 | 91.67 | 73.96 | 91.59 | 84.51 | 91.55 | 92.26 | 80.06 |
 | Hayai v2.5 Nova p384 | 88.00 | 88.22 | 87.66 | 63.39 | 74.01 | 76.62 | 91.70 | 89.69 | 89.24 | 86.05 | 55.03 | 88.56 | 83.60 | 88.20 | 90.48 | 80.97 |
 | Hayai v2.5 Nova p256 | 86.99 | 87.27 | 86.58 | 61.99 | 73.06 | 76.26 | 90.49 | 90.23 | 89.01 | 83.55 | 31.95 | 87.59 | 80.41 | 87.67 | 84.92 | 76.74 |
 | Hayai v2.5 Nova p512 | 87.91 | 88.07 | 87.66 | 63.65 | 74.25 | 75.84 | 91.83 | 89.36 | 88.43 | 87.30 | 65.68 | 88.25 | 84.05 | 88.21 | 89.48 | 80.06 |
@@ -72,7 +72,7 @@ Mean over boxes of $1 - \mathrm{ED}/\max(|p|, |g|)$. The composite is the equal-
 
 | Model | All (7,789) | New (4,660) | v1.2 kept (3,129) | Hard (784) | Gold (1,266) | Non-printed (1,912) | Printed (5,877) | 1–4 ch (1,504) | 5–16 ch (4,675) | 17–32 ch (1,441) | >32 ch (169) | Vertical (7,158) | Horizontal (439) | Dialogue (6,948) | Narration (504) | Other (331) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| mangaocr-nar-small | 98.17 | 98.28 | 98.00 | 93.31 | 95.45 | 95.46 | 99.05 | 96.78 | 98.39 | 99.14 | 96.27 | 98.27 | 97.01 | 98.28 | 98.81 | 94.93 |
+| MangaOCR-Nar-Small | 98.17 | 98.28 | 98.00 | 93.31 | 95.45 | 95.46 | 99.05 | 96.78 | 98.39 | 99.14 | 96.27 | 98.27 | 97.01 | 98.28 | 98.81 | 94.93 |
 | Hayai v2.5 Nova p384 | 97.70 | 97.72 | 97.68 | 91.19 | 93.88 | 94.51 | 98.74 | 95.90 | 98.11 | 98.70 | 93.96 | 97.84 | 96.28 | 97.79 | 98.75 | 94.54 |
 | Hayai v2.5 Nova p256 | 97.61 | 97.63 | 97.59 | 91.44 | 94.13 | 94.56 | 98.61 | 96.15 | 98.04 | 98.69 | 89.50 | 97.78 | 95.55 | 97.77 | 97.92 | 93.99 |
 | Hayai v2.5 Nova p512 | 97.64 | 97.64 | 97.65 | 91.44 | 94.08 | 94.43 | 98.69 | 95.87 | 97.91 | 98.83 | 95.97 | 97.75 | 96.28 | 97.73 | 98.61 | 94.65 |
@@ -95,7 +95,7 @@ Mean over boxes of $1 - \mathrm{ED}/\max(|p|, |g|)$. The composite is the equal-
 
 | Model | All (7,789) | New (4,660) | v1.2 kept (3,129) | Hard (784) | Gold (1,266) | Non-printed (1,912) | Printed (5,877) | 1–4 ch (1,504) | 5–16 ch (4,675) | 17–32 ch (1,441) | >32 ch (169) | Vertical (7,158) | Horizontal (439) | Dialogue (6,948) | Narration (504) | Other (331) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| mangaocr-nar-small | 80.34 | 80.71 | 79.80 | 62.37 | 71.25 | 74.11 | 82.37 | 80.92 | 81.07 | 80.01 | 57.99 | 80.46 | 78.36 | 80.12 | 85.12 | 77.95 |
+| MangaOCR-Nar-Small | 80.34 | 80.71 | 79.80 | 62.37 | 71.25 | 74.11 | 82.37 | 80.92 | 81.07 | 80.01 | 57.99 | 80.46 | 78.36 | 80.12 | 85.12 | 77.95 |
 | Hayai v2.5 Nova p384 | 75.59 | 75.26 | 76.09 | 53.83 | 62.40 | 68.93 | 77.76 | 82.58 | 77.35 | 67.31 | 35.50 | 75.90 | 74.72 | 75.09 | 81.75 | 77.64 |
 | Hayai v2.5 Nova p256 | 74.84 | 74.40 | 75.49 | 52.30 | 61.77 | 67.99 | 77.06 | 83.24 | 77.05 | 65.09 | 21.89 | 75.17 | 71.75 | 74.68 | 77.98 | 73.72 |
 | Hayai v2.5 Nova p512 | 75.27 | 74.85 | 75.90 | 53.06 | 61.93 | 67.94 | 77.66 | 82.58 | 76.62 | 67.52 | 39.05 | 75.40 | 75.17 | 74.76 | 81.35 | 77.64 |
@@ -120,7 +120,7 @@ Boxes that are exact under RIN but not under NFKC alone, grouped by the characte
 
 | Model | Exact under RIN, not under NFKC | Ellipsis | Tilde | Long dash | Quotes | Whitespace and line breaks | Dakuten | Other |
 |---|---|---|---|---|---|---|---|---|
-| mangaocr-nar-small | 837 | 500 | 275 | 47 | 18 | 7 | 0 | 0 |
+| MangaOCR-Nar-Small | 837 | 500 | 275 | 47 | 18 | 7 | 0 | 0 |
 | Hayai v2.5 Nova p384 | 966 | 248 | 259 | 48 | 10 | 486 | 0 | 0 |
 | Preview | 537 | 269 | 235 | 28 | 4 | 6 | 1 | 0 |
 | Hayai v2.1 | 507 | 251 | 181 | 50 | 9 | 24 | 1 | 0 |
@@ -145,7 +145,7 @@ RTX 2080 Ti (11 GB), all models in fp16. The host is a 2× Xeon Gold 6148; each 
 
 | Model | Per-image ms (mean / p50 / p90) | VRAM at batch 1 (MB) | Per-page ms (p50 / p90) | ms per box, per-page test | Composite, per-page outputs | Max img/s | Best batch | Reserved GB at best batch | Match with batch 1 at best batch | One page at a time, gap 0 / 10 / 30 s (ms) | First crop, warm / after 20 s idle (ms) |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| mangaocr-nar-small | 9.1 / 8.9 / 9.9 | 1008 | 36 / 63 | 4.61 | 97.25 | 298.6 | 48 | 2.4 | 100.0% | 37 / 53 / 56 | 7.5 / 24.7 |
+| MangaOCR-Nar-Small | 9.1 / 8.9 / 9.9 | 1008 | 36 / 63 | 4.61 | 97.25 | 298.6 | 48 | 2.4 | 100.0% | 37 / 53 / 56 | 7.5 / 24.7 |
 | Hayai v2.5 Nova p384 | 54.0 / 52.5 / 54.3 | 532 | 252 / 321 | 26.33 | 96.62 | 175.2 | 48 | 1.5 | 100.0% | 245 / 289 / 282 | 51.5 / 81.7 |
 | Hayai v2.5 Nova p256 | 53.0 / 51.4 / 52.7 | 504 | 249 / 309 | 25.43 | 96.59 | 193.6 | 40 | 1.2 | 100.0% | 238 / 290 / 279 | 51.0 / 79.7 |
 | Hayai v2.5 Nova p512 | 55.4 / 53.5 / 54.8 | 567 | 264 / 343 | 28.07 | 96.57 | 111.4 | 40 | 1.5 | 99.8% | 258 / 326 / 320 | 52.6 / 92.4 |
@@ -173,7 +173,7 @@ RTX 2080 Ti (11 GB), all models in fp16. The host is a 2× Xeon Gold 6148; each 
 
 **Per-model notes**
 
-- **mangaocr-nar-small**: timed with the inference code released with the model (details on the model page).
+- **MangaOCR-Nar-Small**: timed with the inference code released with the model (details on the model page).
 - **e4, LoopNAR-α**: fp16; L1/L2/L3 are 1/2/3 decoder loops.
 - **PaddleOCR-VL-For-Manga**: batched inference computes vision attention per image, with at most 16 images per batch; in the per-page test, batches that run out of memory are split in half automatically, and the split is included in the timing.
 - **Hayai v2.1, Hayai v2.5 Nova, baberuOCR v1.1, mangaOCR**: we cast the weights to fp16 (in v1.2, the Hayai models ran with the fp16 autocast of their official code, baberuOCR in bf16 and mangaOCR in fp32). fp16 and fp32 outputs of these models were not compared.
@@ -341,7 +341,7 @@ Pre-filling saves time but can bias the reviewer toward the majority reading. Th
 - **Boxes**: 4,660 new boxes on 1,116 pages; 13 v1.2 boxes removed by the new dakuten and moan rules (dakuten 8, moan 5). 7,789 boxes in total (hard 784, gold 1,266). Labels of the v1.2 kept boxes are unchanged.
 - **Scoring**: normalization changes from `r7` to RIN v1 (`r7` plus `⁇` → `??` and `⊠` → `☒`). All 7,789 labels are identical under both, so differences can only arise on the prediction side. New EM NFKC reference column and new / v1.2 kept subsets.
 - **Speed**: RTX 2080 Ti, all models in fp16; per-page batches follow v1.3 page sizes; new one-page-at-a-time and first-crop tests.
-- **Models**: mangaocr-nar-small and e4 added (e4 under "More models"); baberuOCR updated to v1.1; LoopNAR-α now in fp16.
+- **Models**: MangaOCR-Nar-Small and e4 added (e4 under "More models"); baberuOCR updated to v1.1; LoopNAR-α now in fp16.
 - **Files**: `gt.jsonl` field `text_r7` renamed to `text_rin`, new fields `origin` and `review`; prediction files `baberu` renamed to `baberu_v1_1` and `looped_L*_bf16` to `loopnar_alpha_L*`.
 
 The full materials of v1.2 and earlier (README, appendix, scores, RTX 3080 Ti speed tables) are kept at git tag `v1.2`.

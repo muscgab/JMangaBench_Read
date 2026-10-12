@@ -19,7 +19,7 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 
 | # | Model | Arch | Params | Composite ↑ | CER % ↓ | EM % ↑ | EM NFKC % ↑ | Per-image ms ↓ | Per-page ms (p50) ↓ | Max img/s ↑ |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | mangaocr-nar-small † | NAR | 54M | **97.26** | 1.73 | 91.09 | 80.34 | 9.1 | 35.5 | 299 (b48) |
+| 1 | MangaOCR-Nar-Small † | NAR | 54M | **97.26** | 1.73 | 91.09 | 80.34 | 9.1 | 35.5 | 299 (b48) |
 | 2 | Hayai v2.5 Nova p384 | AR | 157M | **96.62** | 2.40 | 88.00 | 75.59 | 54.0 | 252.0 | 175 (b48) |
 | 3 | Hayai v2.5 Nova p256 | AR | 157M | **96.58** | 2.97 | 86.99 | 74.84 | 53.0 | 249.1 | 194 (b40) |
 | 4 | Hayai v2.5 Nova p512 | AR | 157M | **96.56** | 2.37 | 87.91 | 75.27 | 55.4 | 264.4 | 111 (b40) |
@@ -47,7 +47,7 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 
 - † Made by the authors of this benchmark (see [Conflict of interest](#conflict-of-interest)).
 - ‡ Experimental model, not released. L1/L2/L3 = number of decoder loops, same weights.
-- § e4: the authors' earlier mainline checkpoint (same architecture family as mangaocr-nar-small, 3-loop training), to be released as a reference model. L1/L2/L3 = decoder loops at inference.
+- § e4: the authors' earlier mainline checkpoint (same architecture family as MangaOCR-Nar-Small, 3-loop training), to be released as a reference model. L1/L2/L3 = decoder loops at inference.
 - \* LLM readers. The agreed reading of all three defines 7,005 of the labels (all boxes outside hard), so these rows are listed for reference and are not ranked ([appendix A4](APPENDIX.md#a4-llm-reference-scores-not-ranked)).
 - Accuracy columns use batch-size-1 outputs. Under per-page batching, composite scores change by at most 0.02.
 - EM NFKC: exact match after Unicode NFKC only, for reference. The gap to EM comes mostly from spelling variants that RIN merges (see [Scoring](#scoring)).
@@ -63,7 +63,7 @@ Click a chart to open the interactive version (subsets: all / new / printed / no
 
 [![Composite score vs. per-image latency](figures/pareto_image.png)](https://muscgab.github.io/JMangaBench_Read/)
 
-Reading one page at a time with no wait between pages, the median time per page is 37 ms for mangaocr-nar-small, 245 ms for Hayai v2.5 Nova p384 and 345 ms for Hayai v2.1 ([appendix A2](APPENDIX.md#a2-speed-details)).
+Reading one page at a time with no wait between pages, the median time per page is 37 ms for MangaOCR-Nar-Small, 245 ms for Hayai v2.5 Nova p384 and 345 ms for Hayai v2.1 ([appendix A2](APPENDIX.md#a2-speed-details)).
 
 ## Data
 
@@ -145,7 +145,7 @@ v1.2 labels are unchanged. The review interface showed the three LLM readings on
 
 ### Development use
 
-The authors used Read v1.2 (3,142 boxes) as a development set for mangaocr-nar-small and its predecessors: model selection, comparisons and error analysis. A second development set, "Sol handwriting" (2,248 boxes from the same candidate pool that GPT-6.1 Sol classified as handwritten, with LLM-reading labels), was used from 2026-10-09 for training-time validation, data and architecture comparisons and error analysis. It shares 1,021 boxes with the v1.3 new boxes: 1,004 of the 1,110 new non-printed boxes and 17 printed boxes. Aggregate statistics measured on the candidate pool, minus the v1.2 pages, informed the design of synthetic training data; those pool pages include the pages of the 4,660 new boxes. The statistics are released in [`docs/pool_stats/`](docs/pool_stats/). No image from the candidate pool or the benchmark was used for training. Scores on the new boxes are in [appendix A1](APPENDIX.md#a1-accuracy-by-subset); their non-printed part largely overlaps the Sol handwriting set.
+The authors used Read v1.2 (3,142 boxes) as a development set for MangaOCR-Nar-Small and its predecessors: model selection, comparisons and error analysis. A second development set, "Sol handwriting" (2,248 boxes from the same candidate pool that GPT-6.1 Sol classified as handwritten, with LLM-reading labels), was used from 2026-10-09 for training-time validation, data and architecture comparisons and error analysis. It shares 1,021 boxes with the v1.3 new boxes: 1,004 of the 1,110 new non-printed boxes and 17 printed boxes. Aggregate statistics measured on the candidate pool, minus the v1.2 pages, informed the design of synthetic training data; those pool pages include the pages of the 4,660 new boxes. The statistics are released in [`docs/pool_stats/`](docs/pool_stats/). No image from the candidate pool or the benchmark was used for training. Scores on the new boxes are in [appendix A1](APPENDIX.md#a1-accuracy-by-subset); their non-printed part largely overlaps the Sol handwriting set.
 
 ## Scoring
 
@@ -195,7 +195,7 @@ After the GPU has been idle for several seconds, the driver lowers its clock and
 
 | Model | Weights | Settings |
 |---|---|---|
-| mangaocr-nar-small † | to be released | fp16; the inference code released with the model |
+| MangaOCR-Nar-Small † | to be released | fp16; the inference code released with the model |
 | e4 † | to be released | fp16; 1/2/3 decoder loops |
 | LoopNAR-α † | not released | fp16; 1/2/3 decoder loops |
 | Preview † | [muscgab/manga-ocr-nar-preview](https://huggingface.co/muscgab/manga-ocr-nar-preview) | fp16 |
@@ -205,11 +205,11 @@ After the GPU has been idle for several seconds, the driver lowers its clock and
 | baberuOCR v1.1 | [genshiai-daichi/baberu-ocr](https://huggingface.co/genshiai-daichi/baberu-ocr) (weights = tag v1.1) | fp16; README generation defaults (up to 256 tokens) |
 | mangaOCR | [kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base) | fp16; package defaults otherwise |
 
-fp16 against fp32 on the same inputs: identical outputs for Preview (260/260), PaddleOCR-VL-For-Manga (65/65) and mangaocr-nar-small (7,788/7,789); LoopNAR-α L3 EM 83.61 (fp16) vs 83.62 (fp32). The other models were not compared.
+fp16 against fp32 on the same inputs: identical outputs for Preview (260/260), PaddleOCR-VL-For-Manga (65/65) and MangaOCR-Nar-Small (7,788/7,789); LoopNAR-α L3 EM 83.61 (fp16) vs 83.62 (fp32). The other models were not compared.
 
 ## Conflict of interest
 
-mangaocr-nar-small, e4, LoopNAR-α and Preview are made by the authors of this benchmark.
+MangaOCR-Nar-Small, e4, LoopNAR-α and Preview are made by the authors of this benchmark.
 
 - Labels come from three third-party LLMs and human review. The review interface showed LLM readings only, no OCR model outputs.
 - Read v1.2 was used during the development of the authors' models ([Development use](#development-use)). 1,021 of the new boxes were in a development set before v1.3 was assembled. Box selection and labels do not use any OCR model output.

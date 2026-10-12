@@ -19,7 +19,7 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 
 | # | 模型 | 架构 | 参数量 | 综合分 ↑ | CER % ↓ | EM % ↑ | EM NFKC % ↑ | 逐张延迟 ms ↓ | 整页延迟 ms（p50）↓ | 最大吞吐 张/秒 ↑ |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | mangaocr-nar-small † | NAR | 54M | **97.26** | 1.73 | 91.09 | 80.34 | 9.1 | 35.5 | 299（b48） |
+| 1 | MangaOCR-Nar-Small † | NAR | 54M | **97.26** | 1.73 | 91.09 | 80.34 | 9.1 | 35.5 | 299（b48） |
 | 2 | Hayai v2.5 Nova p384 | AR | 157M | **96.62** | 2.40 | 88.00 | 75.59 | 54.0 | 252.0 | 175（b48） |
 | 3 | Hayai v2.5 Nova p256 | AR | 157M | **96.58** | 2.97 | 86.99 | 74.84 | 53.0 | 249.1 | 194（b40） |
 | 4 | Hayai v2.5 Nova p512 | AR | 157M | **96.56** | 2.37 | 87.91 | 75.27 | 55.4 | 264.4 | 111（b40） |
@@ -47,7 +47,7 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 
 - † 本评测集作者的模型（见[利益关联声明](#利益关联声明)）。
 - ‡ 试验模型，未发布。L1/L2/L3 为解码器循环圈数，权重相同。
-- § e4：作者此前的主线检查点（与 mangaocr-nar-small 同一结构系列，按 3 圈训练），之后作为参照模型发布。L1/L2/L3 为推理时的解码器圈数。
+- § e4：作者此前的主线检查点（与 MangaOCR-Nar-Small 同一结构系列，按 3 圈训练），之后作为参照模型发布。L1/L2/L3 为推理时的解码器圈数。
 - \* LLM 识别器。hard 以外的 7,005 个标签就是三家一致的读法，因此这几行仅供参考，不参与排名（[附录 A4](APPENDIX_zh.md#a4-llm-参考分数不参与排名)）。
 - 准确率各列用 batch = 1 的输出。整页批量推理下综合分变化不超过 0.02。
 - EM NFKC：只做 Unicode NFKC 后的完全匹配，供参考。它与 EM 的差距主要来自 RIN 合并的写法差异（见[评分](#评分)）。
@@ -63,7 +63,7 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 
 [![综合分与逐张延迟](figures/pareto_image.png)](https://muscgab.github.io/JMangaBench_Read/)
 
-一次读一页、页与页之间不停顿时，每页耗时中位数：mangaocr-nar-small 37 ms，Hayai v2.5 Nova p384 245 ms，Hayai v2.1 345 ms（[附录 A2](APPENDIX_zh.md#a2-测速明细)）。
+一次读一页、页与页之间不停顿时，每页耗时中位数：MangaOCR-Nar-Small 37 ms，Hayai v2.5 Nova p384 245 ms，Hayai v2.1 345 ms（[附录 A2](APPENDIX_zh.md#a2-测速明细)）。
 
 ## 数据
 
@@ -145,7 +145,7 @@ v1.2 的标签没有改动。审核界面只显示三家 LLM 读法，不显示�
 
 ### 开发用途说明
 
-作者把 Read v1.2（3,142 框）用作 mangaocr-nar-small 及其前代模型的开发集，用于模型选择、对照实验和错误分析。第二个开发集“Sol 手写”（同一候选池中被 GPT-6.1 Sol 判为手写的 2,248 框，标签为 LLM 读法）自 2026-10-09 起用于训练中验证、数据与结构对照和错误分析；它与 v1.3 新增框重合 1,021 框，即 1,110 个新增非印刷框中的 1,004 框，另有 17 个印刷框。合成训练数据的设计参考了在候选池上测得的汇总统计（不含 v1.2 的页面）；这些页面包含 4,660 个新框所在的页面。相关统计公开在 [`docs/pool_stats/`](docs/pool_stats/)。候选池和评测集的图片均未用于训练。新框上的分数见[附录 A1](APPENDIX_zh.md#a1-各板块准确率)，其中非印刷部分大多与 Sol 手写集重合。
+作者把 Read v1.2（3,142 框）用作 MangaOCR-Nar-Small 及其前代模型的开发集，用于模型选择、对照实验和错误分析。第二个开发集“Sol 手写”（同一候选池中被 GPT-6.1 Sol 判为手写的 2,248 框，标签为 LLM 读法）自 2026-10-09 起用于训练中验证、数据与结构对照和错误分析；它与 v1.3 新增框重合 1,021 框，即 1,110 个新增非印刷框中的 1,004 框，另有 17 个印刷框。合成训练数据的设计参考了在候选池上测得的汇总统计（不含 v1.2 的页面）；这些页面包含 4,660 个新框所在的页面。相关统计公开在 [`docs/pool_stats/`](docs/pool_stats/)。候选池和评测集的图片均未用于训练。新框上的分数见[附录 A1](APPENDIX_zh.md#a1-各板块准确率)，其中非印刷部分大多与 Sol 手写集重合。
 
 ## 评分
 
@@ -195,7 +195,7 @@ GPU 空闲几秒后，驱动会降低频率，下一次请求会变慢（Hayai v
 
 | 模型 | 权重 | 设置 |
 |---|---|---|
-| mangaocr-nar-small † | 待发布 | fp16；随模型发布的推理代码 |
+| MangaOCR-Nar-Small † | 待发布 | fp16；随模型发布的推理代码 |
 | e4 † | 待发布 | fp16；解码器 1/2/3 圈 |
 | LoopNAR-α † | 未发布 | fp16；解码器 1/2/3 圈 |
 | Preview † | [muscgab/manga-ocr-nar-preview](https://huggingface.co/muscgab/manga-ocr-nar-preview) | fp16 |
@@ -205,11 +205,11 @@ GPU 空闲几秒后，驱动会降低频率，下一次请求会变慢（Hayai v
 | baberuOCR v1.1 | [genshiai-daichi/baberu-ocr](https://huggingface.co/genshiai-daichi/baberu-ocr)（权重 = tag v1.1） | fp16；README 默认生成参数（最多 256 token） |
 | mangaOCR | [kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base) | fp16；其余为 manga-ocr 包默认设置 |
 
-同一输入下 fp16 与 fp32 的对比：Preview（260/260）、PaddleOCR-VL-For-Manga（65/65）、mangaocr-nar-small（7,788/7,789）输出一致；LoopNAR-α L3 的 EM 为 83.61（fp16）与 83.62（fp32）。其余模型未做对比。
+同一输入下 fp16 与 fp32 的对比：Preview（260/260）、PaddleOCR-VL-For-Manga（65/65）、MangaOCR-Nar-Small（7,788/7,789）输出一致；LoopNAR-α L3 的 EM 为 83.61（fp16）与 83.62（fp32）。其余模型未做对比。
 
 ## 利益关联声明
 
-mangaocr-nar-small、e4、LoopNAR-α 和 Preview 是本评测集作者的模型。
+MangaOCR-Nar-Small、e4、LoopNAR-α 和 Preview 是本评测集作者的模型。
 
 - 标签来自三个第三方 LLM 和人工审核。审核界面只显示 LLM 读法，不显示任何 OCR 模型的输出。
 - Read v1.2 在作者模型的开发中使用过（见[开发用途说明](#开发用途说明)）。v1.3 成形之前，有 1,021 个新框已在开发集中。选框和标签不使用任何 OCR 模型的输出。
