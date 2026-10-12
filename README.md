@@ -19,7 +19,7 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 
 | # | Model | Arch | Params | Composite ↑ | CER % ↓ | EM % ↑ | EM NFKC % ↑ | Per-image ms ↓ | Per-page ms (p50) ↓ | Max img/s ↑ |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | mangaocr-nar-small (N4) † | NAR | 54M | **97.26** | 1.73 | 91.09 | 80.34 | 9.1 | 35.5 | 299 (b48) |
+| 1 | mangaocr-nar-small † | NAR | 54M | **97.26** | 1.73 | 91.09 | 80.34 | 9.1 | 35.5 | 299 (b48) |
 | 2 | Hayai v2.5 Nova p384 | AR | 157M | **96.62** | 2.40 | 88.00 | 75.59 | 54.0 | 252.0 | 175 (b48) |
 | 3 | Hayai v2.5 Nova p256 | AR | 157M | **96.58** | 2.97 | 86.99 | 74.84 | 53.0 | 249.1 | 194 (b40) |
 | 4 | Hayai v2.5 Nova p512 | AR | 157M | **96.56** | 2.37 | 87.91 | 75.27 | 55.4 | 264.4 | 111 (b40) |
