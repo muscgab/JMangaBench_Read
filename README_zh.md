@@ -195,7 +195,7 @@ GPU 空闲几秒后，驱动会降低频率，下一次请求会变慢（Hayai v
 
 | 模型 | 权重 | 设置 |
 |---|---|---|
-| MangaOCR-Nar-Small † | 待发布 | fp16；随模型发布的推理代码 |
+| MangaOCR-Nar-Small † | [muscgab/mangaocr-nar-small](https://huggingface.co/muscgab/mangaocr-nar-small) | fp16；随模型发布的推理代码 |
 | e4 † | [muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp) | fp16（训练代码）；解码器 1/2/3 圈 |
 | LoopNAR-α † | 未发布 | fp16；解码器 1/2/3 圈 |
 | Preview † | [muscgab/manga-ocr-nar-preview](https://huggingface.co/muscgab/manga-ocr-nar-preview) | fp16 |

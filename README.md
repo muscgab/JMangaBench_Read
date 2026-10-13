@@ -195,7 +195,7 @@ After the GPU has been idle for several seconds, the driver lowers its clock and
 
 | Model | Weights | Settings |
 |---|---|---|
-| MangaOCR-Nar-Small † | to be released | fp16; the inference code released with the model |
+| MangaOCR-Nar-Small † | [muscgab/mangaocr-nar-small](https://huggingface.co/muscgab/mangaocr-nar-small) | fp16; the inference code released with the model |
 | e4 † | [muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp) | fp16 (training code); 1/2/3 decoder loops |
 | LoopNAR-α † | not released | fp16; 1/2/3 decoder loops |
 | Preview † | [muscgab/manga-ocr-nar-preview](https://huggingface.co/muscgab/manga-ocr-nar-preview) | fp16 |
