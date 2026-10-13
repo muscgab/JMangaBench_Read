@@ -53,7 +53,7 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 - EM NFKC: exact match after Unicode NFKC only, for reference. The gap to EM comes mostly from spelling variants that RIN merges (see [Scoring](#scoring)).
 - `bN`: batch size at maximum throughput.
 - Params from the published weight files; mangaOCR estimated from its fp32 file size.
-- Breakdowns by subset, length and role, the speed details and the NFKC results: [appendix](APPENDIX.md).
+- Breakdowns by subset, length and role, the speed details and the NFKC results: [appendix](APPENDIX.md). Scores on the separate SFX set (380 boxes): [appendix A7](APPENDIX.md#a7-sfx-set).
 
 ### Accuracy vs. speed
 
@@ -238,8 +238,8 @@ python eval/score.py --pred my_preds.jsonl --name my_model --out results/my_mode
 |---|---|
 | `data/gt.jsonl` | labels and metadata, 7,789 boxes |
 | `data/llm_readings.jsonl` | three LLM readings per box |
-| `data/predictions/` | outputs of all listed models (batch size 1 and per-page) |
-| `data/gt_sfx.jsonl` | v1.2 SFX set (380 boxes), unchanged and not rescored in v1.3 |
+| `data/predictions/` | outputs of all listed models (batch size 1 and per-page; `sfx_batch1/` for the SFX set) |
+| `data/gt_sfx.jsonl` | v1.2 SFX set (380 boxes), labels unchanged; scores with the v1.3 setup in [appendix A7](APPENDIX.md#a7-sfx-set) |
 | `eval/` | scoring script and RIN normalization code |
 | `speed/` | speed scripts |
 | [Hugging Face](https://huggingface.co/datasets/muscgab/JMangaBench_Read) | crop images at original resolution: `main/<key>.png` (split `test`) |

@@ -18,7 +18,7 @@ All numbers use batch = 1 outputs. CER, EM and 1-NED are computed after RIN v1 n
 - **Orientation**: from the crop shape. Height > 1.2 × width is vertical, width > 1.2 × height is horizontal; the 192 near-square boxes are not listed separately.
 - **Text type**: majority vote of the three LLMs. Six further boxes are SFX (`role = s`), kept from adjustments made in v1.2 against the full page; they are not listed separately.
 - Rows marked \* are LLM readers and are not ranked (see A4).
-- The v1.2 SFX set (380 boxes, `data/gt_sfx.jsonl`) is unchanged in v1.3 and was not rescored.
+- The v1.2 SFX set (380 boxes, `data/gt_sfx.jsonl`) has unchanged labels; its scores with the v1.3 setup are in [A7](#a7-sfx-set).
 
 ### CER (%) ↓
 
@@ -335,6 +335,7 @@ Pre-filling saves time but can bias the reviewer toward the majority reading. Th
 | v1.1 | 2026-10-04 | 5 labels mistakenly saved empty: 3 filled in, 2 discarded. 3,522 boxes (hard 509, gold 709) |
 | v1.2 | 2026-10-04 | SFX and mimetic words moved to a separate SFX set (380 boxes); main set 3,142 boxes (hard 364, gold 547). Labels unchanged |
 | v1.3 | 2026-10-13 | see below |
+| v1.3 (SFX) | 2026-10-13 | SFX set rescored with the v1.3 setup ([A7](#a7-sfx-set)); predictions in `data/predictions/sfx_batch1/`. No label or main-set change |
 
 **Changes in v1.3**
 
@@ -345,3 +346,28 @@ Pre-filling saves time but can bias the reviewer toward the majority reading. Th
 - **Files**: `gt.jsonl` field `text_r7` renamed to `text_rin`, new fields `origin` and `review`; prediction files `baberu` renamed to `baberu_v1_1` and `looped_L*_bf16` to `loopnar_alpha_L*`.
 
 The full materials of v1.2 and earlier (README, appendix, scores, RTX 3080 Ti speed tables) are kept at git tag `v1.2`.
+
+## A7. SFX set
+
+The v1.2 SFX set (380 boxes, `data/gt_sfx.jsonl`): sound effects and mimetic words, 376 of them non-printed (handwritten 248, artistic 128), 3.2 label characters on average. Labels are unchanged since v1.2. Rescored on 2026-10-13 with the v1.3 setup: the same model files and settings as the main set (RTX 2080 Ti, fp16, batch = 1), RIN v1. Ranked by 1 − NED over all boxes (the composite is not used because almost every box is non-printed). Predictions: `data/predictions/sfx_batch1/`. Score with `python eval/score.py --pred <file> --gt data/gt_sfx.jsonl` ("all" section).
+
+| # | Model | Arch | Params | 1 − NED ↑ | CER % ↓ | EM % ↑ | EM 95% CI | EM NFKC % ↑ |
+|---|---|---|---|---|---|---|---|---|
+| 1 | MangaOCR-Nar-Small † | NAR | 54M | **92.56** | 8.15 | 80.79 | 76.5–84.4 | 76.84 |
+| 2 | Hayai v2.5 Nova p512 | AR | 157M | **91.07** | 9.90 | 77.63 | 73.2–81.5 | 73.42 |
+| 3 | Hayai v2.5 Nova p384 | AR | 157M | **90.99** | 9.73 | 77.89 | 73.5–81.8 | 73.95 |
+| 4 | Hayai v2.5 Nova p256 | AR | 157M | **90.97** | 9.82 | 78.42 | 74.0–82.3 | 74.47 |
+| 5 | Preview † | NAR | 196M | **90.29** | 10.82 | 75.79 | 71.2–79.8 | 73.68 |
+| 6 | LoopNAR-α L2 † ‡ | NAR | 50M | **88.00** | 13.56 | 70.53 | 65.8–74.9 | 68.68 |
+| 7 | LoopNAR-α L1 † ‡ | NAR | 50M | **87.71** | 14.06 | 70.26 | 65.5–74.6 | 68.16 |
+| 8 | LoopNAR-α L3 † ‡ | NAR | 50M | **87.50** | 14.06 | 70.26 | 65.5–74.6 | 68.16 |
+| 9 | Hayai v2.1 | AR | 156M | **86.90** | 20.88 | 68.95 | 64.1–73.4 | 65.53 |
+| 10 | PaddleOCR-VL-For-Manga | AR (VLM) | 959M | **80.50** | 20.55 | 62.11 | 57.1–66.8 | 57.89 |
+| 11 | baberuOCR v1.1 | AR | 113M | **72.52** | 30.12 | 50.00 | 45.0–55.0 | 47.11 |
+| 12 | mangaOCR | AR | 111M | **61.10** | 45.59 | 36.05 | 31.4–41.0 | 33.68 |
+| – | e4 L3 † § | NAR | 54M | **93.09** | 7.57 | 81.84 | 77.7–85.4 | 77.89 |
+| – | e4 L2 † § | NAR | 54M | **92.73** | 8.15 | 81.05 | 76.8–84.7 | 77.11 |
+| – | e4 L1 † § | NAR | 54M | **91.96** | 8.90 | 78.68 | 74.3–82.5 | 75.26 |
+
+- † ‡ § as in the README leaderboard. The SFX boxes come from the same pages as the v1.2 main set, which the authors used during development.
+- SFX is not a target of the main set; these scores are for reference.

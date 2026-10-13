@@ -53,7 +53,7 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 - EM NFKC：只做 Unicode NFKC 后的完全匹配，供参考。它与 EM 的差距主要来自 RIN 合并的写法差异（见[评分](#评分)）。
 - `bN`：最大吞吐对应的 batch 大小。
 - 参数量取自公开权重文件；mangaOCR 按 fp32 权重文件大小估算。
-- 按板块、长度、文字类型的明细，测速明细，以及 NFKC 结果，见[附录](APPENDIX_zh.md)。
+- 按板块、长度、文字类型的明细，测速明细，以及 NFKC 结果，见[附录](APPENDIX_zh.md)。独立的拟声词集（380 框）上的分数见[附录 A7](APPENDIX_zh.md#a7-拟声词集)。
 
 ### 准确率与速度
 
@@ -238,8 +238,8 @@ python eval/score.py --pred my_preds.jsonl --name my_model --out results/my_mode
 |---|---|
 | `data/gt.jsonl` | 7,789 框的标签和元数据 |
 | `data/llm_readings.jsonl` | 每框的三家 LLM 读法 |
-| `data/predictions/` | 榜单全部模型的输出（batch = 1 与整页） |
-| `data/gt_sfx.jsonl` | v1.2 拟声词集（380 框），v1.3 未改动、未重新计分 |
+| `data/predictions/` | 榜单全部模型的输出（batch = 1 与整页；拟声词集在 `sfx_batch1/`） |
+| `data/gt_sfx.jsonl` | v1.2 拟声词集（380 框），标签未改动；按 v1.3 设置的分数见[附录 A7](APPENDIX_zh.md#a7-拟声词集) |
 | `eval/` | 评分脚本与 RIN 归一化代码 |
 | `speed/` | 测速脚本 |
 | [Hugging Face](https://huggingface.co/datasets/muscgab/JMangaBench_Read) | 原始分辨率裁图：`main/<key>.png`（split `test`） |
