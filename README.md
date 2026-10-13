@@ -47,7 +47,7 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 
 - † Made by the authors of this benchmark (see [Conflict of interest](#conflict-of-interest)).
 - ‡ Experimental model, not released. L1/L2/L3 = number of decoder loops, same weights.
-- § e4: the authors' earlier mainline checkpoint (same architecture family as MangaOCR-Nar-Small, 3-loop training), to be released as a reference model. L1/L2/L3 = decoder loops at inference.
+- § e4: the authors' earlier mainline checkpoint (same architecture family as MangaOCR-Nar-Small, 3-loop training), released as a reference model ([muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp)). L1/L2/L3 = decoder loops at inference.
 - \* LLM readers. The agreed reading of all three defines 7,005 of the labels (all boxes outside hard), so these rows are listed for reference and are not ranked ([appendix A4](APPENDIX.md#a4-llm-reference-scores-not-ranked)).
 - Accuracy columns use batch-size-1 outputs. Under per-page batching, composite scores change by at most 0.02.
 - EM NFKC: exact match after Unicode NFKC only, for reference. The gap to EM comes mostly from spelling variants that RIN merges (see [Scoring](#scoring)).
@@ -196,7 +196,7 @@ After the GPU has been idle for several seconds, the driver lowers its clock and
 | Model | Weights | Settings |
 |---|---|---|
 | MangaOCR-Nar-Small † | to be released | fp16; the inference code released with the model |
-| e4 † | to be released | fp16; 1/2/3 decoder loops |
+| e4 † | [muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp) | fp16 (training code); 1/2/3 decoder loops |
 | LoopNAR-α † | not released | fp16; 1/2/3 decoder loops |
 | Preview † | [muscgab/manga-ocr-nar-preview](https://huggingface.co/muscgab/manga-ocr-nar-preview) | fp16 |
 | Hayai v2.1 | [JustANormalTinkerer/hayai-ocr-v2](https://huggingface.co/JustANormalTinkerer/hayai-ocr-v2) (main branch = v2.1) | 256 patches; greedy; fp16 |

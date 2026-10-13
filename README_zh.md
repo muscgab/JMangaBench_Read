@@ -47,7 +47,7 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 
 - † 本评测集作者的模型（见[利益关联声明](#利益关联声明)）。
 - ‡ 试验模型，未发布。L1/L2/L3 为解码器循环圈数，权重相同。
-- § e4：作者此前的主线检查点（与 MangaOCR-Nar-Small 同一结构系列，按 3 圈训练），之后作为参照模型发布。L1/L2/L3 为推理时的解码器圈数。
+- § e4：作者此前的主线检查点（与 MangaOCR-Nar-Small 同一结构系列，按 3 圈训练），已作为参照模型发布（[muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp)）。L1/L2/L3 为推理时的解码器圈数。
 - \* LLM 识别器。hard 以外的 7,005 个标签就是三家一致的读法，因此这几行仅供参考，不参与排名（[附录 A4](APPENDIX_zh.md#a4-llm-参考分数不参与排名)）。
 - 准确率各列用 batch = 1 的输出。整页批量推理下综合分变化不超过 0.02。
 - EM NFKC：只做 Unicode NFKC 后的完全匹配，供参考。它与 EM 的差距主要来自 RIN 合并的写法差异（见[评分](#评分)）。
@@ -196,7 +196,7 @@ GPU 空闲几秒后，驱动会降低频率，下一次请求会变慢（Hayai v
 | 模型 | 权重 | 设置 |
 |---|---|---|
 | MangaOCR-Nar-Small † | 待发布 | fp16；随模型发布的推理代码 |
-| e4 † | 待发布 | fp16；解码器 1/2/3 圈 |
+| e4 † | [muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp) | fp16（训练代码）；解码器 1/2/3 圈 |
 | LoopNAR-α † | 未发布 | fp16；解码器 1/2/3 圈 |
 | Preview † | [muscgab/manga-ocr-nar-preview](https://huggingface.co/muscgab/manga-ocr-nar-preview) | fp16 |
 | Hayai v2.1 | [JustANormalTinkerer/hayai-ocr-v2](https://huggingface.co/JustANormalTinkerer/hayai-ocr-v2)（main 分支 = v2.1） | 256 patch；贪心解码；fp16 |
