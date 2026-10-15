@@ -222,6 +222,7 @@ MangaOCR-Nar-Small, e4, LoopNAR-α and Preview are made by the authors of this b
 - The hard subset is defined by LLM disagreement and flags.
 - Sound effects were excluded by LLM role labels; boxes labeled dialogue were not checked one by one.
 - Boxes were screened by LLMs; boxes judged unreadable are not included.
+- All boxes were cropped by one detector (AnimeText YOLO12x), which outputs tight text blocks. Scores may not transfer to other crop styles: whole speech bubbles (bubble detectors) or single text lines. Models trained on AnimeText-derived crops, including ours and Hayai, see a similar crop style in training.
 - One source type (recent fan and original works), one GPU type.
 - At the max-throughput batch size, outputs match batch-size-1 outputs for 99.6–100% of boxes.
 
