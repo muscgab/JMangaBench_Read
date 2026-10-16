@@ -151,7 +151,43 @@ def n4p():  # release decoupled path: CPU prep = decode to uint8 only, everythin
     import e4_adapter as EA
     return (lambda: (lambda imgs: [np.asarray(i.convert("RGB")) for i in imgs])), EA.build_n4_pipe
 
-ADAPTERS = {"n4p_L1": n4p, "n4g_L1": n4g, "n4_L1": n4, "e4_L1": e4(1), "e4_L2": e4(2), "e4_L3": e4(3), "hayai_v2": hayai("hayai_v2", 256), "hayai_nova_p256": hayai("hayai_nova", 256),
+def cpt(turbo):  # manga-ocr-base-CPT release packages (user 2026-10-14), see run_eval.make_cpt
+    d = MODELS / ("manga-ocr-base-CPT-turbo" if turbo else "manga-ocr-base-CPT")
+    def f():
+        sys.path.insert(0, str(d))
+        if turbo:  # CPU prep = decode to uint8 only, everything else on the GPU (as n4p)
+            def build_infer():
+                from manga_ocr_base_cpt_turbo import MangaOcrBaseCPTTurbo
+                return MangaOcrBaseCPTTurbo("cuda", "fp32", d)
+            return (lambda: (lambda imgs: [np.asarray(i.convert("RGB")) for i in imgs])), build_infer
+        def build_prep():
+            from manga_ocr_base_cpt.preprocess import preprocess
+            def prep(imgs):
+                it = [preprocess(i.convert("RGB")) for i in imgs]
+                return {"P": np.stack([x[0] for x in it]), "V": np.stack([x[1] for x in it]), "G": np.array([[x[2], x[3]] for x in it])}
+            return prep
+        def build_infer():  # the package's own path without its 16-crop batch split
+            from manga_ocr_base_cpt import MangaOcrBaseCPT
+            ocr = MangaOcrBaseCPT("cuda", d)
+            def infer(x):
+                pe = torch.stack([ocr.net.pe(int(h), int(w)) for h, w in x["G"]])
+                ids = ocr.net.greedy(torch.from_numpy(x["P"]).cuda(), torch.from_numpy(x["V"]).cuda(), pe)
+                return [ocr._text(r) for r in ids.tolist()]
+            return infer
+        return build_prep, build_infer
+    return f
+
+def nars(name):  # manga-ocr-nar package 1.1.0 as released (2026-10-16): CPU prep = decode to uint8 only, everything else on the GPU
+    d = MODELS / name
+    def f():
+        def build_infer():
+            sys.path.insert(0, str(d))
+            from manga_ocr_nar_small import MangaOcrNarSmall
+            return MangaOcrNarSmall("cuda", model_dir=d)
+        return (lambda: (lambda imgs: [np.asarray(i.convert("RGB")) for i in imgs])), build_infer
+    return f
+
+ADAPTERS = {"nars_distil_rel": nars("manga-ocr-nar-small-distil"), "cpt_turbo": cpt(True), "cpt_plain": cpt(False), "n4p_L1": n4p, "n4g_L1": n4g, "n4_L1": n4, "e4_L1": e4(1), "e4_L2": e4(2), "e4_L3": e4(3), "hayai_v2": hayai("hayai_v2", 256), "hayai_nova_p256": hayai("hayai_nova", 256),
             "hayai_nova_p384": hayai("hayai_nova", 384), "hayai_nova_p512": hayai("hayai_nova", 512), "baberu": baberu, "manga_ocr": manga_ocr,
             "preview": preview, "paddleocr_vl_manga": paddle,
             "loopnar_a_L1": looped(1), "loopnar_a_L2": looped(2), "loopnar_a_L3": looped(3)}

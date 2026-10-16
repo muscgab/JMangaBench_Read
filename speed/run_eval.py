@@ -154,7 +154,38 @@ def make_e4(loops):
         return lambda imgs: infer(EA.prep(imgs))
     return load
 
+def make_cpt(turbo):
+    """manga-ocr-base-CPT (mangaOCR after continued pre-training, mocr_ct3 final; user 2026-10-14): release package as shipped,
+    MODELS/manga-ocr-base-CPT-turbo (CUDA graphs for batch 1-16/24/32/48 + GPU preprocessing) or MODELS/manga-ocr-base-CPT (plain
+    PyTorch, batches of <= 16). Encoder fp16 matmuls / decoder fp32 (= training-time evaluation; the package default)."""
+    def load():
+        import numpy as np
+        d = MODELS / ("manga-ocr-base-CPT-turbo" if turbo else "manga-ocr-base-CPT")
+        sys.path.insert(0, str(d))
+        if turbo:
+            from manga_ocr_base_cpt_turbo import MangaOcrBaseCPTTurbo
+            ocr = MangaOcrBaseCPTTurbo("cuda", "fp32", d)
+            return lambda imgs: ocr([np.asarray(i.convert("RGB")) for i in imgs])
+        from manga_ocr_base_cpt import MangaOcrBaseCPT
+        ocr = MangaOcrBaseCPT("cuda", d)
+        return lambda imgs: ocr(list(imgs))
+    return load
+
+def make_nars(name):
+    """manga-ocr-nar package 1.1.0 as released (2026-10-16), CUDA backend: MODELS/<name> = a downloaded model repository
+    (manga-ocr-nar-small-distil: fp16 with simulated int8, CUDA graphs for batch 1-16/32/48 + GPU preprocessing)."""
+    def load():
+        import numpy as np
+        d = MODELS / name
+        sys.path.insert(0, str(d))
+        from manga_ocr_nar_small import MangaOcrNarSmall
+        ocr = MangaOcrNarSmall("cuda", model_dir=d)
+        return lambda imgs: ocr([np.asarray(i.convert("RGB")) for i in imgs])
+    return load
+
 ADAPTERS = {
+    "nars_distil_rel": make_nars("manga-ocr-nar-small-distil"),
+    "cpt_turbo": make_cpt(True), "cpt_plain": make_cpt(False),
     "n4_L1": make_n4(), "n4g_L1": make_n4g(), "n4b_L1": make_n4b(), "n4p_L1": make_n4p(), "e4_L1": make_e4(1), "e4_L2": make_e4(2), "e4_L3": make_e4(3),
     "hayai_nova_p256": make_hayai("hayai_nova", 256), "hayai_nova_p384": make_hayai("hayai_nova", 384), "hayai_nova_p512": make_hayai("hayai_nova", 512),
     "hayai_v2": make_hayai("hayai_v2", 256),  # README: standard line 256
