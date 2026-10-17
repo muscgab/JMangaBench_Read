@@ -1,4 +1,4 @@
-# JMangaBench_Read v1.3 — a Japanese manga OCR benchmark
+# JMangaBench_Read v1.3.1 — a Japanese manga OCR benchmark
 
 [English](README.md) | [中文](README_zh.md) · [Appendix](APPENDIX.md) · [Interactive leaderboard](https://muscgab.github.io/JMangaBench_Read/) · [Dataset (images)](https://huggingface.co/datasets/muscgab/JMangaBench_Read)
 
@@ -13,26 +13,28 @@ Found an error in a label, a score or the docs? Please [open an issue](https://g
 
 **v1.3 changes.** 4,660 new boxes from 1,116 new pages; 13 v1.2 boxes removed (rules in [Box selection and labeling](#box-selection-and-labeling)); scoring normalization renamed RIN v1 with two added symbol rules; all models re-measured on an RTX 2080 Ti in fp16. The authors used Read v1.2 and 1,021 of the new boxes during model development (see [Development use](#development-use)); scores on the 4,660 new boxes are reported separately in the [appendix](APPENDIX.md#a1-accuracy-by-subset). Full list: [appendix A6](APPENDIX.md#a6-version-history).
 
+**v1.3.1 changes (2026-10-17).** The scoring normalization moves from RIN v1 to RIN v1.1: solid hearts `♥` and `❤` now count as `♡`, the form all labels already use. Boxes, labels and predictions are unchanged; every score was recomputed. EM rises by 0.17–0.37 points per model and the ranking is unchanged.
+
 ## Leaderboard
 
 Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 2080 Ti, fp16.
 
 | # | Model | Arch | Params | Composite ↑ | CER % ↓ | EM % ↑ | EM NFKC % ↑ | Per-image ms ↓ | Per-page ms (p50) ↓ | Max img/s ↑ |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | manga-ocr-base-CPT-flex † ¶ | AR | 111M | **97.45** | 1.53 | 91.42 | 80.60 | 11.0 | 43.0 | 260 (b32) |
-| 2 | manga-ocr-nar-small † | NAR | 54M | **97.26** | 1.73 | 91.09 | 80.34 | 9.1 | 35.5 | 299 (b48) |
-| 3 | Hayai v2.5 Nova p384 | AR | 157M | **96.62** | 2.40 | 88.00 | 75.59 | 54.0 | 252.0 | 175 (b48) |
-| 4 | Hayai v2.5 Nova p256 | AR | 157M | **96.58** | 2.97 | 86.99 | 74.84 | 53.0 | 249.1 | 194 (b40) |
-| 5 | Hayai v2.5 Nova p512 | AR | 157M | **96.56** | 2.37 | 87.91 | 75.27 | 55.4 | 264.4 | 111 (b40) |
-| 6 | manga-ocr-nar-small-distil † ∥ | NAR | 30M | **96.38** | 2.32 | 88.83 | 78.57 | 8.4 | 35.0 | 287 (b48) |
-| 7 | Preview † | NAR | 196M | **95.81** | 2.95 | 85.40 | 78.51 | 31.9 | 103.0 | 91 (b16) |
-| 8 | Hayai v2.1 | AR | 156M | **95.44** | 2.70 | 84.49 | 77.99 | 141.7 | 300.6 | 87 (b128) |
-| 9 | PaddleOCR-VL-For-Manga | AR (VLM) | 959M | **94.98** | 2.03 | 87.52 | 53.15 | 366.6 | 1024.4 | 6.6 (b10) |
-| 10 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.72** | 3.33 | 83.62 | 74.09 | 35.6 | 70.8 | 243 (b48) |
-| 11 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.70** | 3.23 | 83.62 | 74.21 | 42.7 | 76.9 | 224 (b48) |
-| 12 | LoopNAR-α L1 † ‡ | NAR | 50M | **94.13** | 3.95 | 81.95 | 72.64 | 29.0 | 63.2 | 259 (b56) |
-| 13 | baberuOCR v1.1 | AR | 113M | **93.34** | 3.66 | 81.60 | 70.89 | 123.6 | 278.3 | 105 (b256) |
-| 14 | mangaOCR | AR | 111M | **90.23** | 4.84 | 78.25 | 67.90 | 84.9 | 242.4 | 42 (b56) |
+| 1 | manga-ocr-base-CPT-flex † ¶ | AR | 111M | **97.47** | 1.50 | 91.71 | 80.60 | 11.0 | 43.0 | 260 (b32) |
+| 2 | manga-ocr-nar-small † | NAR | 54M | **97.29** | 1.71 | 91.36 | 80.34 | 9.1 | 35.5 | 299 (b48) |
+| 3 | Hayai v2.5 Nova p384 | AR | 157M | **96.64** | 2.38 | 88.18 | 75.59 | 54.0 | 252.0 | 175 (b48) |
+| 4 | Hayai v2.5 Nova p256 | AR | 157M | **96.60** | 2.95 | 87.16 | 74.84 | 53.0 | 249.1 | 194 (b40) |
+| 5 | Hayai v2.5 Nova p512 | AR | 157M | **96.57** | 2.35 | 88.10 | 75.27 | 55.4 | 264.4 | 111 (b40) |
+| 6 | manga-ocr-nar-small-distil † ∥ | NAR | 30M | **96.40** | 2.29 | 89.09 | 78.57 | 8.4 | 35.0 | 287 (b48) |
+| 7 | Preview † | NAR | 196M | **95.84** | 2.92 | 85.68 | 78.51 | 31.9 | 103.0 | 91 (b16) |
+| 8 | Hayai v2.1 | AR | 156M | **95.46** | 2.67 | 84.70 | 77.99 | 141.7 | 300.6 | 87 (b128) |
+| 9 | PaddleOCR-VL-For-Manga | AR (VLM) | 959M | **95.04** | 1.99 | 87.89 | 53.15 | 366.6 | 1024.4 | 6.6 (b10) |
+| 10 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.75** | 3.30 | 83.93 | 74.09 | 35.6 | 70.8 | 243 (b48) |
+| 11 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.73** | 3.20 | 83.93 | 74.21 | 42.7 | 76.9 | 224 (b48) |
+| 12 | LoopNAR-α L1 † ‡ | NAR | 50M | **94.16** | 3.92 | 82.24 | 72.64 | 29.0 | 63.2 | 259 (b56) |
+| 13 | baberuOCR v1.1 | AR | 113M | **93.37** | 3.62 | 81.88 | 70.89 | 123.6 | 278.3 | 105 (b256) |
+| 14 | mangaOCR | AR | 111M | **90.27** | 4.81 | 78.51 | 67.90 | 84.9 | 242.4 | 42 (b56) |
 | – | GPT-6 Astra * | LLM | — | 99.47 | 0.24 | 98.04 | 93.40 | — | — | — |
 | – | GPT-6.1 Sol * | LLM | — | 99.35 | 0.28 | 97.75 | 97.71 | — | — | — |
 | – | Claude Opus 5.5 * | LLM | — | 98.05 | 0.59 | 95.58 | 88.33 | — | — | — |
@@ -41,9 +43,9 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 
 | # | Model | Arch | Params | Composite ↑ | CER % ↓ | EM % ↑ | EM NFKC % ↑ | Per-image ms ↓ | Per-page ms (p50) ↓ | Max img/s ↑ |
 |---|---|---|---|---|---|---|---|---|---|---|
-| – | e4 L3 † § | NAR | 54M | 97.29 | 1.73 | 90.97 | 80.07 | 42.8 | 71.9 | 227 (b32) |
-| – | e4 L2 † § | NAR | 54M | 97.28 | 1.75 | 90.92 | 80.06 | 35.5 | 64.3 | 267 (b48) |
-| – | e4 L1 † § | NAR | 54M | 97.14 | 1.96 | 90.40 | 79.66 | 28.3 | 58.1 | 282 (b24) |
+| – | e4 L3 † § | NAR | 54M | **97.31** | 1.70 | 91.23 | 80.07 | 42.8 | 71.9 | 227 (b32) |
+| – | e4 L2 † § | NAR | 54M | **97.30** | 1.72 | 91.17 | 80.06 | 35.5 | 64.3 | 267 (b48) |
+| – | e4 L1 † § | NAR | 54M | **97.15** | 1.94 | 90.64 | 79.66 | 28.3 | 58.1 | 282 (b24) |
 
 </details>
 
@@ -51,7 +53,7 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 - ‡ Experimental model, not released. L1/L2/L3 = number of decoder loops, same weights.
 - § e4: the authors' earlier mainline checkpoint (same architecture family as manga-ocr-nar-small, 3-loop training), released as a reference model ([muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp)). L1/L2/L3 = decoder loops at inference.
 - ¶ manga-ocr-base-CPT-flex: mangaOCR ([kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base)) after continued pre-training by the authors on the training data of manga-ocr-nar-small; same architecture, a new 6,817-character vocabulary and aspect-preserving input (at most 196 patches). Timed with the CUDA path of its released package (CUDA graphs and GPU preprocessing), whose outputs equal the plain path on all 7,789 boxes; encoder fp16, decoder fp32. Its 224 × 224 sibling (manga-ocr-base-CPT) is not listed.
-- ∥ manga-ocr-nar-small-distil: distilled from manga-ocr-nar-small (6 of its 12 encoder layers, decoder width 384, 30M parameters) and trained with int8 quantization. The GPU columns use its released CUDA backend, which simulates the int8 arithmetic in fp16 (CUDA graphs). On CPU it runs as int8 ONNX: on all 7,789 boxes, EM 88.92 and 37.3 ms per crop (p50, 8 threads, preprocessing included) on a Xeon Gold 6148 (u8u8); EM 88.91 and 21.0 ms per crop on an M1 Pro (u8s8).
+- ∥ manga-ocr-nar-small-distil: distilled from manga-ocr-nar-small (6 of its 12 encoder layers, decoder width 384, 30M parameters) and trained with int8 quantization. The GPU columns use its released CUDA backend, which simulates the int8 arithmetic in fp16 (CUDA graphs). On CPU it runs as int8 ONNX: on all 7,789 boxes (EM under RIN v1), EM 88.92 and 37.3 ms per crop (p50, 8 threads, preprocessing included) on a Xeon Gold 6148 (u8u8); EM 88.91 and 21.0 ms per crop on an M1 Pro (u8s8).
 - \* LLM readers. The agreed reading of all three defines 7,005 of the labels (all boxes outside hard), so these rows are listed for reference and are not ranked ([appendix A4](APPENDIX.md#a4-llm-reference-scores-not-ranked)).
 - Accuracy columns use batch-size-1 outputs. Under per-page batching, composite scores change by at most 0.02.
 - EM NFKC: exact match after Unicode NFKC only, for reference. The gap to EM comes mostly from spelling variants that RIN merges (see [Scoring](#scoring)).
@@ -153,7 +155,7 @@ The authors used Read v1.2 (3,142 boxes) as a development set for manga-ocr-nar-
 
 ## Scoring
 
-Predictions and labels are normalized with the same rules, **RIN v1** (reading-invariant normalization). RIN merges spelling variants that do not change what a reader reads.
+Predictions and labels are normalized with the same rules, **RIN v1.1** (reading-invariant normalization). RIN merges spelling variants that do not change what a reader reads.
 
 | Rule | Example |
 |---|---|
@@ -165,8 +167,9 @@ Predictions and labels are normalized with the same rules, **RIN v1** (reading-i
 | quote forms → `"` / `'` | `〝 〟` → `"` |
 | voicing marks unified | `う゛` → `ゔ`, `あ゙` → `あ゛` |
 | compatibility symbols (new in v1.3: `⁇`, `⊠`) | `⁉` → `!?`, `⁇` → `??`, `⊠` → `☒` |
+| solid hearts → `♡` (new in v1.3.1) | `♥`, `❤` → `♡` |
 
-Characters, small kana, brackets 「」『』, `〇` / `○` and the presence of a voicing mark are kept. Labels use `♡`; `♥` is not mapped. RIN v1 equals Read v1.2's `r7` plus the two v1.3 symbol rules; no v1.3 label changes between the two.
+Characters, small kana, brackets 「」『』, `〇` / `○` and the presence of a voicing mark are kept. Labels use `♡`. RIN v1.1 equals Read v1.2's `r7` plus the two v1.3 symbol rules and the v1.3.1 heart rule; every label is identical under `r7`, RIN v1 and RIN v1.1, so the rules can only change predictions. `eval/normalize/rin.py` keeps RIN v1 as `normalize_rin_v1` for reproducing v1.3 numbers.
 
 **Why RIN.** The labels follow the readers' spelling, which varies for the same glyph: `～` in 326 boxes and `〜` in 112, `…` in 1,832 boxes and `・・` runs in 260, `！` in 868 and `!` in 560. A model that writes each symbol one way cannot match all labels without normalization. EM after NFKC alone is listed for reference.
 
@@ -211,7 +214,7 @@ After the GPU has been idle for several seconds, the driver lowers its clock and
 | baberuOCR v1.1 | [genshiai-daichi/baberu-ocr](https://huggingface.co/genshiai-daichi/baberu-ocr) (weights = tag v1.1) | fp16; README generation defaults (up to 256 tokens) |
 | mangaOCR | [kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base) | fp16; package defaults otherwise |
 
-fp16 against fp32 on the same inputs: identical outputs for Preview (260/260), PaddleOCR-VL-For-Manga (65/65) and manga-ocr-nar-small (7,788/7,789); LoopNAR-α L3 EM 83.61 (fp16) vs 83.62 (fp32). The other models were not compared.
+fp16 against fp32 on the same inputs: identical outputs for Preview (260/260), PaddleOCR-VL-For-Manga (65/65) and manga-ocr-nar-small (7,788/7,789); LoopNAR-α L3 EM 83.61 (fp16) vs 83.62 (fp32), under RIN v1. The other models were not compared.
 
 ## Conflict of interest
 

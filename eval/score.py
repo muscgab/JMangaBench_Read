@@ -1,6 +1,6 @@
-"""JMangaBench_Read v1.3 scoring: python eval/score.py --pred preds.jsonl [--gt data/gt.jsonl] [--name MODEL] [--out result.json]
+"""JMangaBench_Read v1.3.1 scoring: python eval/score.py --pred preds.jsonl [--gt data/gt.jsonl] [--name MODEL] [--out result.json]
 preds.jsonl: one line per box, {"key": ..., "pred": "..."}; missing keys count as empty predictions.
-Main metrics use RIN v1 (eval/normalize/rin.py) on prediction and label: composite (1 - NED, printed and non-printed averaged),
+Main metrics use RIN v1.1 (eval/normalize/rin.py) on prediction and label: composite (1 - NED, printed and non-printed averaged),
 per-subset 1 - NED, CER (total edit distance / total label characters), EM with 95% Wilson CI.
 EM_NFKC: exact match after Unicode NFKC only (prediction and raw label "text"), reported for reference.
 Subsets: all / new / v12_kept / hard / gold / printed / non_printed / gold_random_audit, plus length, orientation and role buckets.
