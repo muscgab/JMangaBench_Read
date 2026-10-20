@@ -1,4 +1,4 @@
-# JMangaBench_Read v1.3.1 — a Japanese manga OCR benchmark
+# JMangaBench_Read v1.3.2 — a Japanese manga OCR benchmark
 
 [English](README.md) | [中文](README_zh.md) · [Appendix](APPENDIX.md) · [Interactive leaderboard](https://muscgab.github.io/JMangaBench_Read/) · [Dataset (images)](https://huggingface.co/datasets/muscgab/JMangaBench_Read)
 
@@ -15,6 +15,8 @@ Found an error in a label, a score or the docs? Please [open an issue](https://g
 
 **v1.3.1 changes (2026-10-17).** The scoring normalization moves from RIN v1 to RIN v1.1: solid hearts `♥` and `❤` now count as `♡`, the form all labels already use. Boxes, labels and predictions are unchanged; every score was recomputed. EM rises by 0.17–0.37 points per model and the ranking is unchanged.
 
+**v1.3.2 changes (2026-10-20).** The scoring normalization moves from RIN v1.1 to RIN v1.2: stars `★`, `✩` and `⭐` now count as `☆`, as solid hearts count as `♡`; music symbols `♪ ♫ ♬` stay distinct. Boxes, raw labels and predictions are unchanged; the normalized label `text_rin` changes in 4 boxes (`★` → `☆`). Every score was recomputed: EM changes by 0 to +0.03 points per model and the ranking is unchanged (in the SFX set, Hayai v2.5 Nova p256 and p384 swap places).
+
 ## Leaderboard
 
 Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 2080 Ti, fp16.
@@ -23,21 +25,21 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | manga-ocr-base-CPT-flex † ¶ | AR | 111M | **97.47** | 1.50 | 91.71 | 80.60 | 11.0 | 43.0 | 260 (b32) |
 | 2 | manga-ocr-nar-small † | NAR | 54M | **97.29** | 1.71 | 91.36 | 80.34 | 9.1 | 35.5 | 299 (b48) |
-| 3 | Hayai v2.5 Nova p384 | AR | 157M | **96.64** | 2.38 | 88.18 | 75.59 | 54.0 | 252.0 | 175 (b48) |
-| 4 | Hayai v2.5 Nova p256 | AR | 157M | **96.60** | 2.95 | 87.16 | 74.84 | 53.0 | 249.1 | 194 (b40) |
-| 5 | Hayai v2.5 Nova p512 | AR | 157M | **96.57** | 2.35 | 88.10 | 75.27 | 55.4 | 264.4 | 111 (b40) |
+| 3 | Hayai v2.5 Nova p384 | AR | 157M | **96.64** | 2.37 | 88.20 | 75.59 | 54.0 | 252.0 | 175 (b48) |
+| 4 | Hayai v2.5 Nova p256 | AR | 157M | **96.61** | 2.95 | 87.19 | 74.84 | 53.0 | 249.1 | 194 (b40) |
+| 5 | Hayai v2.5 Nova p512 | AR | 157M | **96.58** | 2.35 | 88.12 | 75.27 | 55.4 | 264.4 | 111 (b40) |
 | 6 | manga-ocr-nar-small-distil † ∥ | NAR | 30M | **96.40** | 2.29 | 89.09 | 78.57 | 8.4 | 35.0 | 287 (b48) |
-| 7 | Preview † | NAR | 196M | **95.84** | 2.92 | 85.68 | 78.51 | 31.9 | 103.0 | 91 (b16) |
-| 8 | Hayai v2.1 | AR | 156M | **95.46** | 2.67 | 84.70 | 77.99 | 141.7 | 300.6 | 87 (b128) |
-| 9 | PaddleOCR-VL-For-Manga | AR (VLM) | 959M | **95.04** | 1.99 | 87.89 | 53.15 | 366.6 | 1024.4 | 6.6 (b10) |
+| 7 | Preview † | NAR | 196M | **95.84** | 2.92 | 85.70 | 78.51 | 31.9 | 103.0 | 91 (b16) |
+| 8 | Hayai v2.1 | AR | 156M | **95.46** | 2.67 | 84.71 | 77.99 | 141.7 | 300.6 | 87 (b128) |
+| 9 | PaddleOCR-VL-For-Manga | AR (VLM) | 959M | **95.04** | 1.99 | 87.91 | 53.15 | 366.6 | 1024.4 | 6.6 (b10) |
 | 10 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.75** | 3.30 | 83.93 | 74.09 | 35.6 | 70.8 | 243 (b48) |
 | 11 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.73** | 3.20 | 83.93 | 74.21 | 42.7 | 76.9 | 224 (b48) |
 | 12 | LoopNAR-α L1 † ‡ | NAR | 50M | **94.16** | 3.92 | 82.24 | 72.64 | 29.0 | 63.2 | 259 (b56) |
-| 13 | baberuOCR v1.1 | AR | 113M | **93.37** | 3.62 | 81.88 | 70.89 | 123.6 | 278.3 | 105 (b256) |
+| 13 | baberuOCR v1.1 | AR | 113M | **93.38** | 3.62 | 81.90 | 70.89 | 123.6 | 278.3 | 105 (b256) |
 | 14 | mangaOCR | AR | 111M | **90.27** | 4.81 | 78.51 | 67.90 | 84.9 | 242.4 | 42 (b56) |
-| – | GPT-6 Astra * | LLM | — | 99.47 | 0.24 | 98.04 | 93.40 | — | — | — |
-| – | GPT-6.1 Sol * | LLM | — | 99.35 | 0.28 | 97.75 | 97.71 | — | — | — |
-| – | Claude Opus 5.5 * | LLM | — | 98.05 | 0.59 | 95.58 | 88.33 | — | — | — |
+| – | GPT-6 Astra * | LLM | — | 99.47 | 0.24 | 98.05 | 93.40 | — | — | — |
+| – | GPT-6.1 Sol * | LLM | — | 99.35 | 0.27 | 97.75 | 97.71 | — | — | — |
+| – | Claude Opus 5.5 * | LLM | — | 98.05 | 0.59 | 95.60 | 88.33 | — | — | — |
 
 <details><summary>More models</summary>
 
@@ -155,7 +157,7 @@ The authors used Read v1.2 (3,142 boxes) as a development set for manga-ocr-nar-
 
 ## Scoring
 
-Predictions and labels are normalized with the same rules, **RIN v1.1** (reading-invariant normalization). RIN merges spelling variants that do not change what a reader reads.
+Predictions and labels are normalized with the same rules, **RIN v1.2** (reading-invariant normalization). RIN merges spelling variants that do not change what a reader reads.
 
 | Rule | Example |
 |---|---|
@@ -168,8 +170,9 @@ Predictions and labels are normalized with the same rules, **RIN v1.1** (reading
 | voicing marks unified | `う゛` → `ゔ`, `あ゙` → `あ゛` |
 | compatibility symbols (new in v1.3: `⁇`, `⊠`) | `⁉` → `!?`, `⁇` → `??`, `⊠` → `☒` |
 | solid hearts → `♡` (new in v1.3.1) | `♥`, `❤` → `♡` |
+| stars → `☆` (new in v1.3.2) | `★`, `✩`, `⭐` → `☆` |
 
-Characters, small kana, brackets 「」『』, `〇` / `○` and the presence of a voicing mark are kept. Labels use `♡`. RIN v1.1 equals Read v1.2's `r7` plus the two v1.3 symbol rules and the v1.3.1 heart rule; every label is identical under `r7`, RIN v1 and RIN v1.1, so the rules can only change predictions. `eval/normalize/rin.py` keeps RIN v1 as `normalize_rin_v1` for reproducing v1.3 numbers.
+Characters, small kana, brackets 「」『』, `〇` / `○` and the presence of a voicing mark are kept. Labels use `♡`. RIN v1.2 equals Read v1.2's `r7` plus the two v1.3 symbol rules, the v1.3.1 heart rule and the v1.3.2 star rule. Every label is identical under `r7`, RIN v1 and RIN v1.1; under RIN v1.2 four labels change (`★` → `☆`). `eval/normalize/rin.py` keeps RIN v1.1 as `normalize_rin_v11` and RIN v1 as `normalize_rin_v1` for reproducing v1.3.1 and v1.3 numbers.
 
 **Why RIN.** The labels follow the readers' spelling, which varies for the same glyph: `～` in 326 boxes and `〜` in 112, `…` in 1,832 boxes and `・・` runs in 260, `！` in 868 and `!` in 560. A model that writes each symbol one way cannot match all labels without normalization. EM after NFKC alone is listed for reference.
 
