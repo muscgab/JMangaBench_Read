@@ -25,18 +25,20 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | manga-ocr-base-CPT-flex † ¶ | AR | 111M | **97.47** | 1.50 | 91.71 | 80.60 | 11.0 | 43.0 | 260 (b32) |
 | 2 | manga-ocr-nar-small † | NAR | 54M | **97.29** | 1.71 | 91.36 | 80.34 | 9.1 | 35.5 | 299 (b48) |
-| 3 | Hayai v2.5 Nova p384 | AR | 157M | **96.64** | 2.37 | 88.20 | 75.59 | 54.0 | 252.0 | 175 (b48) |
-| 4 | Hayai v2.5 Nova p256 | AR | 157M | **96.61** | 2.95 | 87.19 | 74.84 | 53.0 | 249.1 | 194 (b40) |
-| 5 | Hayai v2.5 Nova p512 | AR | 157M | **96.58** | 2.35 | 88.12 | 75.27 | 55.4 | 264.4 | 111 (b40) |
-| 6 | manga-ocr-nar-small-distil † ∥ | NAR | 30M | **96.40** | 2.29 | 89.09 | 78.57 | 8.4 | 35.0 | 287 (b48) |
-| 7 | Preview † | NAR | 196M | **95.84** | 2.92 | 85.70 | 78.51 | 31.9 | 103.0 | 91 (b16) |
-| 8 | Hayai v2.1 | AR | 156M | **95.46** | 2.67 | 84.71 | 77.99 | 141.7 | 300.6 | 87 (b128) |
-| 9 | PaddleOCR-VL-For-Manga | AR (VLM) | 959M | **95.04** | 1.99 | 87.91 | 53.15 | 366.6 | 1024.4 | 6.6 (b10) |
-| 10 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.75** | 3.30 | 83.93 | 74.09 | 35.6 | 70.8 | 243 (b48) |
-| 11 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.73** | 3.20 | 83.93 | 74.21 | 42.7 | 76.9 | 224 (b48) |
-| 12 | LoopNAR-α L1 † ‡ | NAR | 50M | **94.16** | 3.92 | 82.24 | 72.64 | 29.0 | 63.2 | 259 (b56) |
-| 13 | baberuOCR v1.1 | AR | 113M | **93.38** | 3.62 | 81.90 | 70.89 | 123.6 | 278.3 | 105 (b256) |
-| 14 | mangaOCR | AR | 111M | **90.27** | 4.81 | 78.51 | 67.90 | 84.9 | 242.4 | 42 (b56) |
+| 3 | manga-ocr-charspot-small † ◇ | CharDet | 11M | **97.17** | 1.37 | 92.37 | 80.91 | 7.2 | 43.2 | 274 (b112) |
+| 4 | Hayai v2.5 Nova p384 | AR | 157M | **96.64** | 2.37 | 88.20 | 75.59 | 54.0 | 252.0 | 175 (b48) |
+| 5 | Hayai v2.5 Nova p256 | AR | 157M | **96.61** | 2.95 | 87.19 | 74.84 | 53.0 | 249.1 | 194 (b40) |
+| 6 | Hayai v2.5 Nova p512 | AR | 157M | **96.58** | 2.35 | 88.12 | 75.27 | 55.4 | 264.4 | 111 (b40) |
+| 7 | manga-ocr-nar-small-distil † ∥ | NAR | 30M | **96.40** | 2.29 | 89.09 | 78.57 | 8.4 | 35.0 | 287 (b48) |
+| 8 | Preview † | NAR | 196M | **95.84** | 2.92 | 85.70 | 78.51 | 31.9 | 103.0 | 91 (b16) |
+| 9 | manga-ocr-charspot-nano † ◇ | CharDet | 1.7M | **95.74** | 2.14 | 89.38 | 77.76 | 5.2 | 28.3 | 633 (b8) |
+| 10 | Hayai v2.1 | AR | 156M | **95.46** | 2.67 | 84.71 | 77.99 | 141.7 | 300.6 | 87 (b128) |
+| 11 | PaddleOCR-VL-For-Manga | AR (VLM) | 959M | **95.04** | 1.99 | 87.91 | 53.15 | 366.6 | 1024.4 | 6.6 (b10) |
+| 12 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.75** | 3.30 | 83.93 | 74.09 | 35.6 | 70.8 | 243 (b48) |
+| 13 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.73** | 3.20 | 83.93 | 74.21 | 42.7 | 76.9 | 224 (b48) |
+| 14 | LoopNAR-α L1 † ‡ | NAR | 50M | **94.16** | 3.92 | 82.24 | 72.64 | 29.0 | 63.2 | 259 (b56) |
+| 15 | baberuOCR v1.1 | AR | 113M | **93.38** | 3.62 | 81.90 | 70.89 | 123.6 | 278.3 | 105 (b256) |
+| 16 | mangaOCR | AR | 111M | **90.27** | 4.81 | 78.51 | 67.90 | 84.9 | 242.4 | 42 (b56) |
 | – | GPT-6 Astra * | LLM | — | 99.47 | 0.24 | 98.05 | 93.40 | — | — | — |
 | – | GPT-6.1 Sol * | LLM | — | 99.35 | 0.27 | 97.75 | 97.71 | — | — | — |
 | – | Claude Opus 5.5 * | LLM | — | 98.05 | 0.59 | 95.60 | 88.33 | — | — | — |
@@ -56,6 +58,7 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 - § e4: the authors' earlier mainline checkpoint (same architecture family as manga-ocr-nar-small, 3-loop training), released as a reference model ([muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp)). L1/L2/L3 = decoder loops at inference.
 - ¶ manga-ocr-base-CPT-flex: mangaOCR ([kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base)) after continued pre-training by the authors on the training data of manga-ocr-nar-small; same architecture, a new 6,817-character vocabulary and aspect-preserving input (at most 196 patches). Timed with the CUDA path of its released package (CUDA graphs and GPU preprocessing), whose outputs equal the plain path on all 7,789 boxes; encoder fp16, decoder fp32. Its 224 × 224 sibling (manga-ocr-base-CPT) is not listed.
 - ∥ manga-ocr-nar-small-distil: distilled from manga-ocr-nar-small (6 of its 12 encoder layers, decoder width 384, 30M parameters) and trained with int8 quantization. The GPU columns use its released CUDA backend, which simulates the int8 arithmetic in fp16 (CUDA graphs). On CPU it runs as int8 ONNX: on all 7,789 boxes (EM under RIN v1), EM 88.92 and 37.3 ms per crop (p50, 8 threads, preprocessing included) on a Xeon Gold 6148 (u8u8); EM 88.91 and 21.0 ms per crop on an M1 Pro (u8s8).
+- ◇ manga-ocr-charspot-small, manga-ocr-charspot-nano: character detection with a learned reading order and no text decoder (Arch "CharDet"). Timed with the CUDA backends released with the models: manga-ocr-charspot-small in fp32 (CUDA graphs for common shapes, resize on the GPU), manga-ocr-charspot-nano with its dense network in fp16 (CUDA graphs). Both also run on the CPU as ONNX (see the model pages).
 - \* LLM readers. The agreed reading of all three defines 7,005 of the labels (all boxes outside hard), so these rows are listed for reference and are not ranked ([appendix A4](APPENDIX.md#a4-llm-reference-scores-not-ranked)).
 - Accuracy columns use batch-size-1 outputs. Under per-page batching, composite scores change by at most 0.02.
 - EM NFKC: exact match after Unicode NFKC only, for reference. The gap to EM comes mostly from spelling variants that RIN merges (see [Scoring](#scoring)).
@@ -71,7 +74,7 @@ Click a chart to open the interactive version (subsets: all / new / printed / no
 
 [![Composite score vs. per-image latency](figures/pareto_image.png)](https://muscgab.github.io/JMangaBench_Read/)
 
-Reading one page at a time with no wait between pages, the median time per page is 35 ms for manga-ocr-nar-small-distil, 37 ms for manga-ocr-nar-small, 50 ms for manga-ocr-base-CPT-flex, 245 ms for Hayai v2.5 Nova p384 and 345 ms for Hayai v2.1 ([appendix A2](APPENDIX.md#a2-speed-details)).
+Reading one page at a time with no wait between pages, the median time per page is 33 ms for manga-ocr-charspot-nano, 35 ms for manga-ocr-nar-small-distil, 37 ms for manga-ocr-nar-small, 50 ms for manga-ocr-base-CPT-flex and manga-ocr-charspot-small, 245 ms for Hayai v2.5 Nova p384 and 345 ms for Hayai v2.1 ([appendix A2](APPENDIX.md#a2-speed-details)).
 
 ## Data
 
@@ -208,20 +211,22 @@ After the GPU has been idle for several seconds, the driver lowers its clock and
 | manga-ocr-base-CPT-flex † | [muscgab/manga-ocr-base-CPT-flex](https://huggingface.co/muscgab/manga-ocr-base-CPT-flex) | encoder fp16, decoder fp32; the CUDA path of the inference package released with the model (CUDA graphs) |
 | manga-ocr-nar-small † | [muscgab/manga-ocr-nar-small](https://huggingface.co/muscgab/manga-ocr-nar-small) | fp16; the inference code released with the model |
 | manga-ocr-nar-small-distil † | [muscgab/manga-ocr-nar-small-distil](https://huggingface.co/muscgab/manga-ocr-nar-small-distil) | fp16 with simulated int8; the inference code released with the model |
+| manga-ocr-charspot-small † | [muscgab/manga-ocr-charspot-small](https://huggingface.co/muscgab/manga-ocr-charspot-small) | fp32; the CUDA backend released with the model (CUDA graphs) |
+| manga-ocr-charspot-nano † | [muscgab/manga-ocr-charspot-nano](https://huggingface.co/muscgab/manga-ocr-charspot-nano) | dense network fp16; the CUDA backend released with the model (CUDA graphs) |
 | e4 † | [muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp) | fp16 (training code); 1/2/3 decoder loops |
 | LoopNAR-α † | not released | fp16; 1/2/3 decoder loops |
 | Preview † | [muscgab/manga-ocr-nar-preview](https://huggingface.co/muscgab/manga-ocr-nar-preview) | fp16 |
 | Hayai v2.1 | [JustANormalTinkerer/hayai-ocr-v2](https://huggingface.co/JustANormalTinkerer/hayai-ocr-v2) (main branch = v2.1) | 256 patches; greedy; fp16 |
 | Hayai v2.5 Nova | [JustANormalTinkerer/hayai-ocr-v2.5-nova](https://huggingface.co/JustANormalTinkerer/hayai-ocr-v2.5-nova) | 256 / 384 / 512 patches; otherwise as above |
 | PaddleOCR-VL-For-Manga | [jzhang533/PaddleOCR-VL-For-Manga](https://huggingface.co/jzhang533/PaddleOCR-VL-For-Manga) | fp16; greedy; prompt `OCR:`; batched with per-image vision attention, at most 16 crops per batch |
-| baberuOCR v1.1 | [genshiai-daichi/baberu-ocr](https://huggingface.co/genshiai-daichi/baberu-ocr) (weights = tag v1.1) | fp16; README generation defaults (up to 256 tokens) |
+| baberuOCR v1.1 | [genshiai-daichi/baberu-ocr](https://huggingface.co/genshiai-daichi/baberu-ocr) (weights = tag v1.1) | fp16; README generation settings, except at most 128 new tokens (README default 256; the longest output is 100 tokens, so the limit is never reached) |
 | mangaOCR | [kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base) | fp16; package defaults otherwise |
 
 fp16 against fp32 on the same inputs: identical outputs for Preview (260/260), PaddleOCR-VL-For-Manga (65/65) and manga-ocr-nar-small (7,788/7,789); LoopNAR-α L3 EM 83.61 (fp16) vs 83.62 (fp32), under RIN v1. The other models were not compared.
 
 ## Conflict of interest
 
-manga-ocr-nar-small, manga-ocr-nar-small-distil, manga-ocr-base-CPT-flex, e4, LoopNAR-α and Preview are made by the authors of this benchmark.
+manga-ocr-nar-small, manga-ocr-nar-small-distil, manga-ocr-charspot-small, manga-ocr-charspot-nano, manga-ocr-base-CPT-flex, e4, LoopNAR-α and Preview are made by the authors of this benchmark.
 
 - Labels come from three third-party LLMs and human review. The review interface showed LLM readings only, no OCR model outputs.
 - Read v1.2 was used during the development of the authors' models ([Development use](#development-use)). 1,021 of the new boxes were in a development set before v1.3 was assembled. Box selection and labels do not use any OCR model output.

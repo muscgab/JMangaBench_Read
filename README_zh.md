@@ -25,18 +25,20 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 |---|---|---|---|---|---|---|---|---|---|---|
 | 1 | manga-ocr-base-CPT-flex † ¶ | AR | 111M | **97.47** | 1.50 | 91.71 | 80.60 | 11.0 | 43.0 | 260（b32） |
 | 2 | manga-ocr-nar-small † | NAR | 54M | **97.29** | 1.71 | 91.36 | 80.34 | 9.1 | 35.5 | 299（b48） |
-| 3 | Hayai v2.5 Nova p384 | AR | 157M | **96.64** | 2.37 | 88.20 | 75.59 | 54.0 | 252.0 | 175（b48） |
-| 4 | Hayai v2.5 Nova p256 | AR | 157M | **96.61** | 2.95 | 87.19 | 74.84 | 53.0 | 249.1 | 194（b40） |
-| 5 | Hayai v2.5 Nova p512 | AR | 157M | **96.58** | 2.35 | 88.12 | 75.27 | 55.4 | 264.4 | 111（b40） |
-| 6 | manga-ocr-nar-small-distil † ∥ | NAR | 30M | **96.40** | 2.29 | 89.09 | 78.57 | 8.4 | 35.0 | 287（b48） |
-| 7 | Preview † | NAR | 196M | **95.84** | 2.92 | 85.70 | 78.51 | 31.9 | 103.0 | 91（b16） |
-| 8 | Hayai v2.1 | AR | 156M | **95.46** | 2.67 | 84.71 | 77.99 | 141.7 | 300.6 | 87（b128） |
-| 9 | PaddleOCR-VL-For-Manga | AR（VLM） | 959M | **95.04** | 1.99 | 87.91 | 53.15 | 366.6 | 1024.4 | 6.6（b10） |
-| 10 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.75** | 3.30 | 83.93 | 74.09 | 35.6 | 70.8 | 243（b48） |
-| 11 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.73** | 3.20 | 83.93 | 74.21 | 42.7 | 76.9 | 224（b48） |
-| 12 | LoopNAR-α L1 † ‡ | NAR | 50M | **94.16** | 3.92 | 82.24 | 72.64 | 29.0 | 63.2 | 259（b56） |
-| 13 | baberuOCR v1.1 | AR | 113M | **93.38** | 3.62 | 81.90 | 70.89 | 123.6 | 278.3 | 105（b256） |
-| 14 | mangaOCR | AR | 111M | **90.27** | 4.81 | 78.51 | 67.90 | 84.9 | 242.4 | 42（b56） |
+| 3 | manga-ocr-charspot-small † ◇ | CharDet | 11M | **97.17** | 1.37 | 92.37 | 80.91 | 7.2 | 43.2 | 274（b112） |
+| 4 | Hayai v2.5 Nova p384 | AR | 157M | **96.64** | 2.37 | 88.20 | 75.59 | 54.0 | 252.0 | 175（b48） |
+| 5 | Hayai v2.5 Nova p256 | AR | 157M | **96.61** | 2.95 | 87.19 | 74.84 | 53.0 | 249.1 | 194（b40） |
+| 6 | Hayai v2.5 Nova p512 | AR | 157M | **96.58** | 2.35 | 88.12 | 75.27 | 55.4 | 264.4 | 111（b40） |
+| 7 | manga-ocr-nar-small-distil † ∥ | NAR | 30M | **96.40** | 2.29 | 89.09 | 78.57 | 8.4 | 35.0 | 287（b48） |
+| 8 | Preview † | NAR | 196M | **95.84** | 2.92 | 85.70 | 78.51 | 31.9 | 103.0 | 91（b16） |
+| 9 | manga-ocr-charspot-nano † ◇ | CharDet | 1.7M | **95.74** | 2.14 | 89.38 | 77.76 | 5.2 | 28.3 | 633（b8） |
+| 10 | Hayai v2.1 | AR | 156M | **95.46** | 2.67 | 84.71 | 77.99 | 141.7 | 300.6 | 87（b128） |
+| 11 | PaddleOCR-VL-For-Manga | AR（VLM） | 959M | **95.04** | 1.99 | 87.91 | 53.15 | 366.6 | 1024.4 | 6.6（b10） |
+| 12 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.75** | 3.30 | 83.93 | 74.09 | 35.6 | 70.8 | 243（b48） |
+| 13 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.73** | 3.20 | 83.93 | 74.21 | 42.7 | 76.9 | 224（b48） |
+| 14 | LoopNAR-α L1 † ‡ | NAR | 50M | **94.16** | 3.92 | 82.24 | 72.64 | 29.0 | 63.2 | 259（b56） |
+| 15 | baberuOCR v1.1 | AR | 113M | **93.38** | 3.62 | 81.90 | 70.89 | 123.6 | 278.3 | 105（b256） |
+| 16 | mangaOCR | AR | 111M | **90.27** | 4.81 | 78.51 | 67.90 | 84.9 | 242.4 | 42（b56） |
 | – | GPT-6 Astra * | LLM | — | 99.47 | 0.24 | 98.05 | 93.40 | — | — | — |
 | – | GPT-6.1 Sol * | LLM | — | 99.35 | 0.27 | 97.75 | 97.71 | — | — | — |
 | – | Claude Opus 5.5 * | LLM | — | 98.05 | 0.59 | 95.60 | 88.33 | — | — | — |
@@ -56,6 +58,7 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 - § e4：作者此前的主线检查点（与 manga-ocr-nar-small 同一结构系列，按 3 圈训练），已作为参照模型发布（[muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp)）。L1/L2/L3 为推理时的解码器圈数。
 - ¶ manga-ocr-base-CPT-flex：mangaOCR（[kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base)）由作者在 manga-ocr-nar-small 的训练数据上继续预训练；结构不变，换用 6,817 字的新词表，输入保持长宽比（最多 196 个 patch）。速度用其发布包的 CUDA 路径（CUDA 图 + GPU 预处理）测得，该路径在全部 7,789 框上与普通路径输出一致；编码器 fp16、解码器 fp32。224 × 224 的版本（manga-ocr-base-CPT）不列入。
 - ∥ manga-ocr-nar-small-distil：由 manga-ocr-nar-small 蒸馏得到（保留 12 层编码器中的 6 层，解码器宽度 384，参数 30M），以 int8 量化训练。GPU 各列使用其发布的 CUDA 后端，在 fp16 中模拟 int8 运算（CUDA 图）。CPU 上以 int8 ONNX 运行（EM 按 RIN v1 计）：全部 7,789 框，Xeon Gold 6148 上 EM 88.92、每框 37.3 ms（p50，8 线程，含预处理，u8u8）；M1 Pro 上 EM 88.91、每框 21.0 ms（u8s8）。
+- ◇ manga-ocr-charspot-small、manga-ocr-charspot-nano：逐字检测 + 学习的阅读顺序，没有文本解码器（架构记作“CharDet”）。速度用随模型发布的 CUDA 后端测得：manga-ocr-charspot-small 为 fp32（常见形状用 CUDA 图，缩放在 GPU 上做），manga-ocr-charspot-nano 的稠密网络为 fp16（CUDA 图）。两者也能在 CPU 上以 ONNX 运行（见模型页）。
 - \* LLM 识别器。hard 以外的 7,005 个标签就是三家一致的读法，因此这几行仅供参考，不参与排名（[附录 A4](APPENDIX_zh.md#a4-llm-参考分数不参与排名)）。
 - 准确率各列用 batch = 1 的输出。整页批量推理下综合分变化不超过 0.02。
 - EM NFKC：只做 Unicode NFKC 后的完全匹配，供参考。它与 EM 的差距主要来自 RIN 合并的写法差异（见[评分](#评分)）。
@@ -71,7 +74,7 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 
 [![综合分与逐张延迟](figures/pareto_image.png)](https://muscgab.github.io/JMangaBench_Read/)
 
-一次读一页、页与页之间不停顿时，每页耗时中位数：manga-ocr-nar-small-distil 35 ms，manga-ocr-nar-small 37 ms，manga-ocr-base-CPT-flex 50 ms，Hayai v2.5 Nova p384 245 ms，Hayai v2.1 345 ms（[附录 A2](APPENDIX_zh.md#a2-测速明细)）。
+一次读一页、页与页之间不停顿时，每页耗时中位数：manga-ocr-charspot-nano 33 ms，manga-ocr-nar-small-distil 35 ms，manga-ocr-nar-small 37 ms，manga-ocr-base-CPT-flex 和 manga-ocr-charspot-small 各 50 ms，Hayai v2.5 Nova p384 245 ms，Hayai v2.1 345 ms（[附录 A2](APPENDIX_zh.md#a2-测速明细)）。
 
 ## 数据
 
@@ -208,20 +211,22 @@ GPU 空闲几秒后，驱动会降低频率，下一次请求会变慢（Hayai v
 | manga-ocr-base-CPT-flex † | [muscgab/manga-ocr-base-CPT-flex](https://huggingface.co/muscgab/manga-ocr-base-CPT-flex) | 编码器 fp16、解码器 fp32；随模型发布的推理包的 CUDA 路径（CUDA 图） |
 | manga-ocr-nar-small † | [muscgab/manga-ocr-nar-small](https://huggingface.co/muscgab/manga-ocr-nar-small) | fp16；随模型发布的推理代码 |
 | manga-ocr-nar-small-distil † | [muscgab/manga-ocr-nar-small-distil](https://huggingface.co/muscgab/manga-ocr-nar-small-distil) | fp16 模拟 int8；随模型发布的推理代码 |
+| manga-ocr-charspot-small † | [muscgab/manga-ocr-charspot-small](https://huggingface.co/muscgab/manga-ocr-charspot-small) | fp32；随模型发布的 CUDA 后端（CUDA 图） |
+| manga-ocr-charspot-nano † | [muscgab/manga-ocr-charspot-nano](https://huggingface.co/muscgab/manga-ocr-charspot-nano) | 稠密网络 fp16；随模型发布的 CUDA 后端（CUDA 图） |
 | e4 † | [muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp) | fp16（训练代码）；解码器 1/2/3 圈 |
 | LoopNAR-α † | 未发布 | fp16；解码器 1/2/3 圈 |
 | Preview † | [muscgab/manga-ocr-nar-preview](https://huggingface.co/muscgab/manga-ocr-nar-preview) | fp16 |
 | Hayai v2.1 | [JustANormalTinkerer/hayai-ocr-v2](https://huggingface.co/JustANormalTinkerer/hayai-ocr-v2)（main 分支 = v2.1） | 256 patch；贪心解码；fp16 |
 | Hayai v2.5 Nova | [JustANormalTinkerer/hayai-ocr-v2.5-nova](https://huggingface.co/JustANormalTinkerer/hayai-ocr-v2.5-nova) | 256 / 384 / 512 patch；其余同上 |
 | PaddleOCR-VL-For-Manga | [jzhang533/PaddleOCR-VL-For-Manga](https://huggingface.co/jzhang533/PaddleOCR-VL-For-Manga) | fp16；贪心解码；提示词 `OCR:`；批量推理使用逐图视觉注意力，每批最多 16 张 |
-| baberuOCR v1.1 | [genshiai-daichi/baberu-ocr](https://huggingface.co/genshiai-daichi/baberu-ocr)（权重 = tag v1.1） | fp16；README 默认生成参数（最多 256 token） |
+| baberuOCR v1.1 | [genshiai-daichi/baberu-ocr](https://huggingface.co/genshiai-daichi/baberu-ocr)（权重 = tag v1.1） | fp16；README 默认生成参数，但最多生成 128 个 token（README 默认 256；最长输出 100 个 token，没有触及上限） |
 | mangaOCR | [kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base) | fp16；其余为 manga-ocr 包默认设置 |
 
 同一输入下 fp16 与 fp32 的对比：Preview（260/260）、PaddleOCR-VL-For-Manga（65/65）、manga-ocr-nar-small（7,788/7,789）输出一致；LoopNAR-α L3 的 EM 为 83.61（fp16）与 83.62（fp32）（按 RIN v1 计）。其余模型未做对比。
 
 ## 利益关联声明
 
-manga-ocr-nar-small、manga-ocr-nar-small-distil、manga-ocr-base-CPT-flex、e4、LoopNAR-α 和 Preview 是本评测集作者的模型。
+manga-ocr-nar-small、manga-ocr-nar-small-distil、manga-ocr-charspot-small、manga-ocr-charspot-nano、manga-ocr-base-CPT-flex、e4、LoopNAR-α 和 Preview 是本评测集作者的模型。
 
 - 标签来自三个第三方 LLM 和人工审核。审核界面只显示 LLM 读法，不显示任何 OCR 模型的输出。
 - Read v1.2 在作者模型的开发中使用过（见[开发用途说明](#开发用途说明)）。v1.3 成形之前，有 1,021 个新框已在开发集中。选框和标签不使用任何 OCR 模型的输出。
