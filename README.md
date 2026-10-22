@@ -47,6 +47,7 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 
 | # | Model | Arch | Params | Composite ↑ | CER % ↓ | EM % ↑ | EM NFKC % ↑ | Per-image ms ↓ | Per-page ms (p50) ↓ | Max img/s ↑ |
 |---|---|---|---|---|---|---|---|---|---|---|
+| – | nar-small-R6 † △ | NAR | 54M | **98.11** | 1.51 | 93.44 | 81.82 | 9.1 | 35.6 | 300 (b48) |
 | – | e4 L3 † § | NAR | 54M | **97.31** | 1.70 | 91.23 | 80.07 | 42.8 | 71.9 | 227 (b32) |
 | – | e4 L2 † § | NAR | 54M | **97.30** | 1.72 | 91.17 | 80.06 | 35.5 | 64.3 | 267 (b48) |
 | – | e4 L1 † § | NAR | 54M | **97.15** | 1.94 | 90.64 | 79.66 | 28.3 | 58.1 | 282 (b24) |
@@ -59,6 +60,7 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 - ¶ manga-ocr-base-CPT-flex: mangaOCR ([kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base)) after continued pre-training by the authors on the training data of manga-ocr-nar-small; same architecture, a new 6,817-character vocabulary and aspect-preserving input (at most 196 patches). Timed with the CUDA path of its released package (CUDA graphs and GPU preprocessing), whose outputs equal the plain path on all 7,789 boxes; encoder fp16, decoder fp32. Its 224 × 224 sibling (manga-ocr-base-CPT) is not listed.
 - ∥ manga-ocr-nar-small-distil: distilled from manga-ocr-nar-small (6 of its 12 encoder layers, decoder width 384, 30M parameters) and trained with int8 quantization. The GPU columns use its released CUDA backend, which simulates the int8 arithmetic in fp16 (CUDA graphs). On CPU it runs as int8 ONNX: on all 7,789 boxes (EM under RIN v1), EM 88.92 and 37.3 ms per crop (p50, 8 threads, preprocessing included) on a Xeon Gold 6148 (u8u8); EM 88.91 and 21.0 ms per crop on an M1 Pro (u8s8).
 - ◇ manga-ocr-charspot-small, manga-ocr-charspot-nano: character detection with a learned reading order and no text decoder (Arch "CharDet"). Timed with the CUDA backends released with the models: manga-ocr-charspot-small in fp32 (CUDA graphs for common shapes, resize on the GPU), manga-ocr-charspot-nano with its dense network in fp16 (CUDA graphs). Both also run on the CPU as ONNX (see the model pages).
+- △ nar-small-R6: an experimental model by the authors, not released, listed under "More models" without a rank. manga-ocr-nar-small trained further on real manga only; same architecture and CUDA inference path, fp16 (weights rescaled for fp16; fp16 and fp32 outputs agree on 7,788 of 7,789 boxes). Weaker than manga-ocr-nar-small on boxes over 32 characters. Its scores on this version of the benchmark were seen while its training runs were compared.
 - \* LLM readers. The agreed reading of all three defines 7,005 of the labels (all boxes outside hard), so these rows are listed for reference and are not ranked ([appendix A4](APPENDIX.md#a4-llm-reference-scores-not-ranked)).
 - Accuracy columns use batch-size-1 outputs. Under per-page batching, composite scores change by at most 0.02.
 - EM NFKC: exact match after Unicode NFKC only, for reference. The gap to EM comes mostly from spelling variants that RIN merges (see [Scoring](#scoring)).
@@ -68,7 +70,7 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 
 ### Accuracy vs. speed
 
-Click a chart to open the interactive version (subsets: all / new / printed / non-printed / gold / hard; e4 under "More models").
+Click a chart to open the interactive version (subsets: all / new / printed / non-printed / gold / hard; e4 and nar-small-R6 under "More models").
 
 [![Composite score vs. per-page latency](figures/pareto_page.png)](https://muscgab.github.io/JMangaBench_Read/)
 
@@ -213,6 +215,7 @@ After the GPU has been idle for several seconds, the driver lowers its clock and
 | manga-ocr-nar-small-distil † | [muscgab/manga-ocr-nar-small-distil](https://huggingface.co/muscgab/manga-ocr-nar-small-distil) | fp16 with simulated int8; the inference code released with the model |
 | manga-ocr-charspot-small † | [muscgab/manga-ocr-charspot-small](https://huggingface.co/muscgab/manga-ocr-charspot-small) | fp32; the CUDA backend released with the model (CUDA graphs) |
 | manga-ocr-charspot-nano † | [muscgab/manga-ocr-charspot-nano](https://huggingface.co/muscgab/manga-ocr-charspot-nano) | dense network fp16; the CUDA backend released with the model (CUDA graphs) |
+| nar-small-R6 † | not released | fp16; the inference code of manga-ocr-nar-small |
 | e4 † | [muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp) | fp16 (training code); 1/2/3 decoder loops |
 | LoopNAR-α † | not released | fp16; 1/2/3 decoder loops |
 | Preview † | [muscgab/manga-ocr-nar-preview](https://huggingface.co/muscgab/manga-ocr-nar-preview) | fp16 |
@@ -226,7 +229,7 @@ fp16 against fp32 on the same inputs: identical outputs for Preview (260/260), P
 
 ## Conflict of interest
 
-manga-ocr-nar-small, manga-ocr-nar-small-distil, manga-ocr-charspot-small, manga-ocr-charspot-nano, manga-ocr-base-CPT-flex, e4, LoopNAR-α and Preview are made by the authors of this benchmark.
+manga-ocr-nar-small, nar-small-R6, manga-ocr-nar-small-distil, manga-ocr-charspot-small, manga-ocr-charspot-nano, manga-ocr-base-CPT-flex, e4, LoopNAR-α and Preview are made by the authors of this benchmark.
 
 - Labels come from three third-party LLMs and human review. The review interface showed LLM readings only, no OCR model outputs.
 - Read v1.2 was used during the development of the authors' models ([Development use](#development-use)). 1,021 of the new boxes were in a development set before v1.3 was assembled. Box selection and labels do not use any OCR model output.

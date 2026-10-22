@@ -40,6 +40,7 @@ All numbers use batch = 1 outputs. CER, EM and 1-NED are computed after RIN v1.2
 | LoopNAR-α L1 | 3.92 | 3.90 | 3.95 | 12.27 | 8.64 | 9.32 | 2.80 | 6.44 | 2.81 | 2.61 | 14.77 | 2.96 | 17.59 | 3.10 | 4.98 | 20.13 |
 | baberuOCR v1.1 | 3.62 | 3.47 | 3.85 | 12.66 | 8.75 | 11.80 | 1.93 | 7.32 | 3.30 | 2.52 | 7.89 | 2.70 | 18.10 | 2.84 | 3.77 | 20.68 |
 | mangaOCR | 4.81 | 4.78 | 4.86 | 16.42 | 11.55 | 17.55 | 2.18 | 11.06 | 4.73 | 3.06 | 8.66 | 3.58 | 23.91 | 3.80 | 4.69 | 27.40 |
+| nar-small-R6 | 1.51 | 1.43 | 1.63 | 6.79 | 4.63 | 3.34 | 1.13 | 1.95 | 0.98 | 0.82 | 7.45 | 0.99 | 8.86 | 1.05 | 2.03 | 10.72 |
 | e4 L3 | 1.70 | 1.55 | 1.94 | 6.97 | 4.71 | 4.01 | 1.22 | 3.26 | 1.30 | 0.79 | 7.10 | 1.24 | 8.37 | 1.30 | 1.76 | 10.48 |
 | e4 L2 | 1.72 | 1.59 | 1.94 | 7.07 | 4.80 | 4.04 | 1.25 | 3.18 | 1.36 | 0.82 | 6.92 | 1.27 | 8.19 | 1.33 | 1.94 | 10.17 |
 | e4 L1 | 1.94 | 1.82 | 2.11 | 7.46 | 5.15 | 4.45 | 1.42 | 3.14 | 1.45 | 0.96 | 8.35 | 1.40 | 9.91 | 1.47 | 2.23 | 11.70 |
@@ -67,6 +68,7 @@ All numbers use batch = 1 outputs. CER, EM and 1-NED are computed after RIN v1.2
 | LoopNAR-α L1 | 82.24 | 82.36 | 82.07 | 51.66 | 64.85 | 63.65 | 88.29 | 84.11 | 84.45 | 78.21 | 39.05 | 84.09 | 58.09 | 83.95 | 79.56 | 51.36 |
 | baberuOCR v1.1 | 81.90 | 81.63 | 82.29 | 53.57 | 65.40 | 60.15 | 88.97 | 83.84 | 83.17 | 79.81 | 47.34 | 83.60 | 57.63 | 83.43 | 84.13 | 47.43 |
 | mangaOCR | 78.51 | 78.48 | 78.56 | 44.64 | 58.21 | 48.27 | 88.34 | 79.12 | 79.27 | 78.90 | 48.52 | 80.72 | 46.24 | 80.25 | 83.33 | 35.95 |
+| nar-small-R6 | 93.44 | 93.61 | 93.19 | 74.36 | 82.94 | 85.41 | 96.05 | 94.55 | 94.20 | 92.37 | 71.60 | 94.19 | 84.51 | 94.06 | 93.25 | 81.27 |
 | e4 L3 | 91.23 | 91.55 | 90.76 | 70.54 | 79.94 | 80.60 | 94.69 | 91.49 | 91.85 | 91.60 | 68.64 | 91.83 | 83.37 | 91.87 | 91.27 | 77.95 |
 | e4 L2 | 91.17 | 91.48 | 90.70 | 70.66 | 79.94 | 80.49 | 94.64 | 91.62 | 91.70 | 91.74 | 67.46 | 91.74 | 83.83 | 91.74 | 91.47 | 78.85 |
 | e4 L1 | 90.64 | 90.94 | 90.19 | 69.13 | 78.91 | 79.45 | 94.28 | 91.69 | 91.23 | 91.05 | 61.54 | 91.30 | 81.78 | 91.28 | 90.48 | 77.95 |
@@ -96,6 +98,7 @@ Mean over boxes of $1 - \mathrm{ED}/\max(|p|, |g|)$. The composite is the equal-
 | LoopNAR-α L1 | 96.13 | 96.21 | 96.01 | 87.48 | 91.14 | 90.29 | 98.03 | 93.15 | 96.94 | 97.49 | 88.64 | 96.73 | 88.85 | 96.67 | 96.21 | 85.06 |
 | baberuOCR v1.1 | 95.97 | 95.98 | 95.95 | 86.07 | 90.24 | 88.29 | 98.47 | 93.10 | 96.45 | 97.61 | 93.99 | 96.63 | 86.48 | 96.54 | 96.79 | 83.11 |
 | mangaOCR | 94.33 | 94.36 | 94.28 | 81.41 | 86.57 | 82.29 | 98.24 | 90.03 | 94.89 | 97.07 | 93.59 | 95.39 | 79.91 | 95.15 | 95.60 | 75.92 |
+| nar-small-R6 | 98.74 | 98.80 | 98.66 | 94.61 | 96.49 | 96.87 | 99.35 | 98.09 | 98.93 | 99.18 | 95.67 | 98.89 | 96.89 | 98.90 | 98.76 | 95.58 |
 | e4 L3 | 98.25 | 98.41 | 98.02 | 93.27 | 95.37 | 95.47 | 99.16 | 96.72 | 98.54 | 99.21 | 95.63 | 98.40 | 96.20 | 98.41 | 98.74 | 94.26 |
 | e4 L2 | 98.23 | 98.37 | 98.01 | 93.22 | 95.34 | 95.47 | 99.13 | 96.80 | 98.49 | 99.18 | 95.72 | 98.36 | 96.41 | 98.38 | 98.67 | 94.41 |
 | e4 L1 | 98.13 | 98.29 | 97.89 | 92.95 | 95.11 | 95.24 | 99.07 | 96.83 | 98.39 | 99.06 | 94.59 | 98.28 | 95.95 | 98.30 | 98.50 | 94.13 |
@@ -123,6 +126,7 @@ Mean over boxes of $1 - \mathrm{ED}/\max(|p|, |g|)$. The composite is the equal-
 | LoopNAR-α L1 | 72.64 | 72.66 | 72.61 | 46.05 | 58.69 | 58.26 | 77.32 | 74.27 | 74.78 | 69.05 | 29.59 | 74.04 | 54.21 | 73.68 | 73.61 | 50.15 |
 | baberuOCR v1.1 | 70.89 | 70.69 | 71.20 | 46.81 | 57.82 | 54.71 | 76.16 | 72.47 | 72.21 | 68.91 | 37.28 | 72.03 | 53.99 | 71.73 | 76.39 | 45.92 |
 | mangaOCR | 67.90 | 67.88 | 67.95 | 38.01 | 50.87 | 43.46 | 75.86 | 68.48 | 68.64 | 68.29 | 39.05 | 69.57 | 42.82 | 68.93 | 76.19 | 35.05 |
+| nar-small-R6 | 81.82 | 81.95 | 81.62 | 66.07 | 74.09 | 77.98 | 83.07 | 82.78 | 82.91 | 80.36 | 55.62 | 82.15 | 78.13 | 81.75 | 84.92 | 78.85 |
 | e4 L3 | 80.07 | 80.45 | 79.51 | 61.86 | 70.93 | 73.85 | 82.10 | 80.52 | 81.01 | 79.60 | 54.44 | 80.23 | 77.90 | 79.97 | 83.93 | 76.44 |
 | e4 L2 | 80.06 | 80.43 | 79.51 | 62.12 | 71.01 | 73.80 | 82.10 | 80.59 | 80.96 | 79.74 | 53.25 | 80.22 | 78.13 | 79.89 | 84.13 | 77.34 |
 | e4 L1 | 79.66 | 80.00 | 79.16 | 60.33 | 69.83 | 72.86 | 81.88 | 80.59 | 80.62 | 79.32 | 47.93 | 79.91 | 76.08 | 79.56 | 83.33 | 76.44 |
@@ -137,6 +141,7 @@ Boxes that are exact under RIN but not under NFKC alone, grouped by the characte
 | Model | Exact under RIN, not under NFKC | Ellipsis | Tilde | Long dash | Quotes | Whitespace and line breaks | Dakuten | Other |
 |---|---|---|---|---|---|---|---|---|
 | manga-ocr-nar-small | 858 | 500 | 278 | 47 | 18 | 7 | 0 | 0 |
+| nar-small-R6 | 905 | 524 | 301 | 61 | 22 | 7 | 0 | 2 |
 | manga-ocr-nar-small-distil | 819 | 492 | 257 | 39 | 18 | 6 | 0 | 0 |
 | manga-ocr-charspot-small | 893 | 516 | 294 | 67 | 22 | 6 | 0 | 2 |
 | manga-ocr-charspot-nano | 905 | 512 | 297 | 68 | 19 | 5 | 0 | 1 |
@@ -181,6 +186,7 @@ RTX 2080 Ti (11 GB), all models in fp16. The host is a 2× Xeon Gold 6148; each 
 | LoopNAR-α L1 | 29.0 / 28.5 / 30.3 | 316 | 63 / 120 | 8.45 | 94.16 | 259.1 | 56 | 8.7 | 99.8% | 72 / 95 / 116 | 28.2 / 51.1 |
 | baberuOCR v1.1 | 123.6 / 107.3 / 209.7 | 254 | 278 / 438 | 33.87 | 93.38 | 104.5 | 256 | 6.5 | 100.0% | 322 / 346 / 342 | 101.9 / 123.6 |
 | mangaOCR | 84.9 / 77.1 / 134.5 | 248 | 242 / 471 | 31.91 | 90.26 | 41.7 | 56 | 2.3 | 99.6% | 288 / 333 / 286 | 72.6 / 93.3 |
+| nar-small-R6 | 9.1 / 8.9 / 9.9 | 1008 | 36 / 64 | 4.60 | 98.11 | 299.8 | 48 | 2.4 | 100.0% | 39 / 53 / 64 | 7.5 / 40.3 |
 | e4 L3 | 42.8 / 42.4 / 44.2 | 343 | 72 / 111 | 9.03 | 97.31 | 226.6 | 32 | 10.1 | 100.0% | 75 / 96 / 103 | 41.6 / 64.8 |
 | e4 L2 | 35.5 / 34.9 / 36.8 | 341 | 64 / 108 | 8.22 | 97.30 | 267.5 | 48 | 7.3 | 100.0% | 68 / 89 / 96 | 34.9 / 57.9 |
 | e4 L1 | 28.3 / 27.9 / 29.6 | 340 | 58 / 104 | 7.62 | 97.15 | 281.9 | 24 | 7.3 | 100.0% | 63 / 84 / 92 | 28.0 / 52.2 |
@@ -199,6 +205,7 @@ RTX 2080 Ti (11 GB), all models in fp16. The host is a 2× Xeon Gold 6148; each 
 
 - **manga-ocr-nar-small, manga-ocr-nar-small-distil**: timed with the inference code released with the models (details on the model pages). manga-ocr-nar-small-distil was trained with int8 quantization; on the GPU its int8 arithmetic is simulated in fp16.
 - **manga-ocr-charspot-small, manga-ocr-charspot-nano**: timed with the CUDA backends released with the models (details on the model pages). manga-ocr-charspot-small runs in fp32; it resizes on the GPU, so in the max-throughput test the CPU workers only hand over the decoded images and the resize is part of the timed GPU call. manga-ocr-charspot-nano runs its dense network in fp16 and resizes in the CPU workers.
+- **nar-small-R6**: timed with the same code path and settings as manga-ocr-nar-small; only the weights differ.
 - **e4, LoopNAR-α**: fp16; L1/L2/L3 are 1/2/3 decoder loops.
 - **PaddleOCR-VL-For-Manga**: batched inference computes vision attention per image, with at most 16 images per batch; in the per-page test, batches that run out of memory are split in half automatically, and the split is included in the timing.
 - **Hayai v2.1, Hayai v2.5 Nova, baberuOCR v1.1, mangaOCR**: we cast the weights to fp16 (in v1.2, the Hayai models ran with the fp16 autocast of their official code, baberuOCR in bf16 and mangaOCR in fp32). fp16 and fp32 outputs of these models were not compared.
@@ -365,6 +372,7 @@ Pre-filling saves time but can bias the reviewer toward the majority reading. Th
 | v1.3.1 | 2026-10-17 | scoring normalization RIN v1 → RIN v1.1 (`♥`, `❤` → `♡`); all scores recomputed (EM +0.17 to +0.37 per model, ranking unchanged), SFX set included. No box, label or prediction change |
 | v1.3.2 | 2026-10-20 | scoring normalization RIN v1.1 → RIN v1.2 (`★`, `✩`, `⭐` → `☆`); `text_rin` updated in 4 boxes; all scores recomputed (EM 0 to +0.03 per model, ranking unchanged; SFX set: Nova p256 and p384 swap). No box, raw label or prediction change |
 | v1.3.2 (models) | 2026-10-22 | manga-ocr-charspot-small and manga-ocr-charspot-nano added to the leaderboard and the appendix tables, including the SFX set; new predictions in `data/predictions/{batch1,page,sfx_batch1}/`. Model table: the baberuOCR note now states its limit of 128 new tokens (no output reaches it). No box, label or scoring change |
+| v1.3.2 (models) | 2026-10-22 | nar-small-R6 (experimental model by the authors, not released) added under "More models" (unranked) and to the appendix tables, including the SFX set; predictions in `data/predictions/{batch1,page,sfx_batch1}/nar_small_r6.jsonl`. No box, label or scoring change |
 
 **Changes in v1.3**
 
@@ -398,6 +406,7 @@ The v1.2 SFX set (380 boxes, `data/gt_sfx.jsonl`): sound effects and mimetic wor
 | 14 | PaddleOCR-VL-For-Manga | AR (VLM) | 959M | **80.86** | 20.05 | 62.89 | 57.9–67.6 | 57.89 |
 | 15 | baberuOCR v1.1 | AR | 113M | **72.59** | 30.03 | 50.26 | 45.3–55.3 | 47.11 |
 | 16 | mangaOCR | AR | 111M | **61.23** | 45.42 | 36.32 | 31.6–41.3 | 33.68 |
+| – | nar-small-R6 † △ | NAR | 54M | **95.70** | 4.41 | 88.68 | 85.1–91.5 | 84.21 |
 | – | e4 L3 † § | NAR | 54M | **93.09** | 7.57 | 81.84 | 77.7–85.4 | 77.89 |
 | – | e4 L2 † § | NAR | 54M | **92.73** | 8.15 | 81.05 | 76.8–84.7 | 77.11 |
 | – | e4 L1 † § | NAR | 54M | **92.01** | 8.82 | 78.95 | 74.6–82.8 | 75.26 |
