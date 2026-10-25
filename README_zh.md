@@ -47,7 +47,7 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 
 | # | 模型 | 架构 | 参数量 | 综合分 ↑ | CER % ↓ | EM % ↑ | EM NFKC % ↑ | 逐张延迟 ms ↓ | 整页延迟 ms（p50）↓ | 最大吞吐 张/秒 ↑ |
 |---|---|---|---|---|---|---|---|---|---|---|
-| – | nar-small-R6 † △ | NAR | 54M | **98.11** | 1.51 | 93.44 | 81.82 | 9.1 | 35.6 | 300（b48） |
+| – | nar-small-R16 † △ | NAR | 54M | **98.12** | 1.08 | 93.86 | 82.23 | 9.3 | 37.5 | 284（b48） |
 | – | e4 L3 † § | NAR | 54M | **97.31** | 1.70 | 91.23 | 80.07 | 42.8 | 71.9 | 227（b32） |
 | – | e4 L2 † § | NAR | 54M | **97.30** | 1.72 | 91.17 | 80.06 | 35.5 | 64.3 | 267（b48） |
 | – | e4 L1 † § | NAR | 54M | **97.15** | 1.94 | 90.64 | 79.66 | 28.3 | 58.1 | 282（b24） |
@@ -60,7 +60,7 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 - ¶ manga-ocr-base-CPT-flex：mangaOCR（[kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base)）由作者在 manga-ocr-nar-small 的训练数据上继续预训练；结构不变，换用 6,817 字的新词表，输入保持长宽比（最多 196 个 patch）。速度用其发布包的 CUDA 路径（CUDA 图 + GPU 预处理）测得，该路径在全部 7,789 框上与普通路径输出一致；编码器 fp16、解码器 fp32。224 × 224 的版本（manga-ocr-base-CPT）不列入。
 - ∥ manga-ocr-nar-small-distil：由 manga-ocr-nar-small 蒸馏得到（保留 12 层编码器中的 6 层，解码器宽度 384，参数 30M），以 int8 量化训练。GPU 各列使用其发布的 CUDA 后端，在 fp16 中模拟 int8 运算（CUDA 图）。CPU 上以 int8 ONNX 运行（EM 按 RIN v1 计）：全部 7,789 框，Xeon Gold 6148 上 EM 88.92、每框 37.3 ms（p50，8 线程，含预处理，u8u8）；M1 Pro 上 EM 88.91、每框 21.0 ms（u8s8）。
 - ◇ manga-ocr-charspot-small、manga-ocr-charspot-nano：逐字检测 + 学习的阅读顺序，没有文本解码器（架构记作“CharDet”）。速度用随模型发布的 CUDA 后端测得：manga-ocr-charspot-small 为 fp32（常见形状用 CUDA 图，缩放在 GPU 上做），manga-ocr-charspot-nano 的稠密网络为 fp16（CUDA 图）。两者也能在 CPU 上以 ONNX 运行（见模型页）。
-- △ nar-small-R6：本评测集作者的实验模型，未发布，列在“更多模型”中、不排名。manga-ocr-nar-small 只用真实漫画数据继续训练；结构和 CUDA 推理路径相同，fp16（权重为 fp16 做了等价缩放；fp16 与 fp32 输出在 7,789 框中 7,788 框相同）。超过 32 字的长框弱于 manga-ocr-nar-small。比较训练方案时看过它在本版评测集上的成绩。
+- △ nar-small-R16：本评测集作者的实验模型，列在“更多模型”中、不排名；权重在 [muscgab/manga-ocr-nar-small](https://huggingface.co/muscgab/manga-ocr-nar-small/tree/r16) 的 `r16` 分支（不是正式发布，`main` 不变）。manga-ocr-nar-small 用真实漫画、长文本合成数据和它原来的训练集继续训练，输出长度从 64 字提高到 160 字；结构相同，只是输出位置从 65 个改为 161 个，CUDA 推理路径相同，fp16（权重为 fp16 做了等价缩放；fp16 与 fp32 输出在 7,789 框中 7,785 框相同）。它替换了同一训练系列更早的检查点 nar-small-R6（2026-10-22 上榜）。比较这一系列的训练方案时看过它在本版评测集上的成绩。
 - \* LLM 识别器。hard 以外的 7,005 个标签就是三家一致的读法，因此这几行仅供参考，不参与排名（[附录 A4](APPENDIX_zh.md#a4-llm-参考分数不参与排名)）。
 - 准确率各列用 batch = 1 的输出。整页批量推理下综合分变化不超过 0.02。
 - EM NFKC：只做 Unicode NFKC 后的完全匹配，供参考。它与 EM 的差距主要来自 RIN 合并的写法差异（见[评分](#评分)）。
@@ -70,7 +70,7 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 
 ### 准确率与速度
 
-点击图片打开交互版（可切换板块：全部 / 新增 / 印刷 / 非印刷 / gold / hard；e4 和 nar-small-R6 在“更多模型”中）。
+点击图片打开交互版（可切换板块：全部 / 新增 / 印刷 / 非印刷 / gold / hard；e4 和 nar-small-R16 在“更多模型”中）。
 
 [![综合分与整页延迟](figures/pareto_page.png)](https://muscgab.github.io/JMangaBench_Read/)
 
@@ -215,7 +215,7 @@ GPU 空闲几秒后，驱动会降低频率，下一次请求会变慢（Hayai v
 | manga-ocr-nar-small-distil † | [muscgab/manga-ocr-nar-small-distil](https://huggingface.co/muscgab/manga-ocr-nar-small-distil) | fp16 模拟 int8；随模型发布的推理代码 |
 | manga-ocr-charspot-small † | [muscgab/manga-ocr-charspot-small](https://huggingface.co/muscgab/manga-ocr-charspot-small) | fp32；随模型发布的 CUDA 后端（CUDA 图） |
 | manga-ocr-charspot-nano † | [muscgab/manga-ocr-charspot-nano](https://huggingface.co/muscgab/manga-ocr-charspot-nano) | 稠密网络 fp16；随模型发布的 CUDA 后端（CUDA 图） |
-| nar-small-R6 † | 未发布 | fp16；manga-ocr-nar-small 的推理代码 |
+| nar-small-R16 † | [muscgab/manga-ocr-nar-small 的 `r16` 分支](https://huggingface.co/muscgab/manga-ocr-nar-small/tree/r16) | fp16；该分支的推理代码（`cuda` 后端） |
 | e4 † | [muscgab/mangaocr-nar-looped-e4-exp](https://huggingface.co/muscgab/mangaocr-nar-looped-e4-exp) | fp16（训练代码）；解码器 1/2/3 圈 |
 | LoopNAR-α † | 未发布 | fp16；解码器 1/2/3 圈 |
 | Preview † | [muscgab/manga-ocr-nar-preview](https://huggingface.co/muscgab/manga-ocr-nar-preview) | fp16 |
@@ -229,7 +229,7 @@ GPU 空闲几秒后，驱动会降低频率，下一次请求会变慢（Hayai v
 
 ## 利益关联声明
 
-manga-ocr-nar-small、nar-small-R6、manga-ocr-nar-small-distil、manga-ocr-charspot-small、manga-ocr-charspot-nano、manga-ocr-base-CPT-flex、e4、LoopNAR-α 和 Preview 是本评测集作者的模型。
+manga-ocr-nar-small、nar-small-R16、manga-ocr-nar-small-distil、manga-ocr-charspot-small、manga-ocr-charspot-nano、manga-ocr-base-CPT-flex、e4、LoopNAR-α 和 Preview 是本评测集作者的模型。
 
 - 标签来自三个第三方 LLM 和人工审核。审核界面只显示 LLM 读法，不显示任何 OCR 模型的输出。
 - Read v1.2 在作者模型的开发中使用过（见[开发用途说明](#开发用途说明)）。v1.3 成形之前，有 1,021 个新框已在开发集中。选框和标签不使用任何 OCR 模型的输出。
