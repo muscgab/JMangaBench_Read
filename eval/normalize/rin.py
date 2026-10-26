@@ -1,4 +1,4 @@
-"""RIN (Reading-Invariant Normalization) v1.2, the scoring normalization of JMangaBench_Read v1.3.2.
+"""RIN (Reading-Invariant Normalization) v1.2, the scoring normalization of JMangaBench_Read v1.3.2 and v1.3.3.
 
 RIN merges spelling variants that do not change what a reader reads: character width, whitespace, the form and length of
 pause dots, long marks, wave marks and dashes, quote forms, the encoding of voicing marks, and a few compatibility characters.

@@ -1,4 +1,4 @@
-# JMangaBench_Read v1.3.2 — a Japanese manga OCR benchmark
+# JMangaBench_Read v1.3.3 — a Japanese manga OCR benchmark
 
 [English](README.md) | [中文](README_zh.md) · [Appendix](APPENDIX.md) · [Interactive leaderboard](https://muscgab.github.io/JMangaBench_Read/) · [Dataset (images)](https://huggingface.co/datasets/muscgab/JMangaBench_Read)
 
@@ -17,30 +17,32 @@ Found an error in a label, a score or the docs? Please [open an issue](https://g
 
 **v1.3.2 changes (2026-10-20).** The scoring normalization moves from RIN v1.1 to RIN v1.2: stars `★`, `✩` and `⭐` now count as `☆`, as solid hearts count as `♡`; music symbols `♪ ♫ ♬` stay distinct. Boxes, raw labels and predictions are unchanged; the normalized label `text_rin` changes in 4 boxes (`★` → `☆`). Every score was recomputed: EM changes by 0 to +0.03 points per model and the ranking is unchanged (in the SFX set, Hayai v2.5 Nova p256 and p384 swap places).
 
+**v1.3.3 changes (2026-10-27).** Label convention for circles: `○` and `〇` look the same in most fonts, so labels write `〇` only as the kanji numeral zero (next to another kanji numeral, as in 一〇九五日) and `○` for every other circle (censoring and placeholders, as in ○○くん). Two labels change `〇` → `○` (〇年後…, ザン〇エフ！？; both non-printed). RIN is unchanged (v1.2). Every score was recomputed: EM changes by −0.03 to +0.01 points per model and the ranking is unchanged; the SFX set does not contain either box.
+
 ## Leaderboard
 
 Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 2080 Ti, fp16.
 
 | # | Model | Arch | Params | Composite ↑ | CER % ↓ | EM % ↑ | EM NFKC % ↑ | Per-image ms ↓ | Per-page ms (p50) ↓ | Max img/s ↑ |
 |---|---|---|---|---|---|---|---|---|---|---|
-| 1 | manga-ocr-base-CPT-flex † ¶ | AR | 111M | **97.47** | 1.50 | 91.71 | 80.60 | 11.0 | 43.0 | 260 (b32) |
+| 1 | manga-ocr-base-CPT-flex † ¶ | AR | 111M | **97.48** | 1.50 | 91.71 | 80.60 | 11.0 | 43.0 | 260 (b32) |
 | 2 | manga-ocr-nar-small † | NAR | 54M | **97.29** | 1.71 | 91.36 | 80.34 | 9.1 | 35.5 | 299 (b48) |
 | 3 | manga-ocr-charspot-small † ◇ | CharDet | 11M | **97.17** | 1.37 | 92.37 | 80.91 | 7.2 | 43.2 | 274 (b112) |
-| 4 | Hayai v2.5 Nova p384 | AR | 157M | **96.64** | 2.37 | 88.20 | 75.59 | 54.0 | 252.0 | 175 (b48) |
-| 5 | Hayai v2.5 Nova p256 | AR | 157M | **96.61** | 2.95 | 87.19 | 74.84 | 53.0 | 249.1 | 194 (b40) |
-| 6 | Hayai v2.5 Nova p512 | AR | 157M | **96.58** | 2.35 | 88.12 | 75.27 | 55.4 | 264.4 | 111 (b40) |
-| 7 | manga-ocr-nar-small-distil † ∥ | NAR | 30M | **96.40** | 2.29 | 89.09 | 78.57 | 8.4 | 35.0 | 287 (b48) |
-| 8 | Preview † | NAR | 196M | **95.84** | 2.92 | 85.70 | 78.51 | 31.9 | 103.0 | 91 (b16) |
-| 9 | manga-ocr-charspot-nano † ◇ | CharDet | 1.7M | **95.74** | 2.14 | 89.38 | 77.76 | 5.2 | 28.3 | 633 (b8) |
-| 10 | Hayai v2.1 | AR | 156M | **95.46** | 2.67 | 84.71 | 77.99 | 141.7 | 300.6 | 87 (b128) |
-| 11 | PaddleOCR-VL-For-Manga | AR (VLM) | 959M | **95.04** | 1.99 | 87.91 | 53.15 | 366.6 | 1024.4 | 6.6 (b10) |
-| 12 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.75** | 3.30 | 83.93 | 74.09 | 35.6 | 70.8 | 243 (b48) |
-| 13 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.73** | 3.20 | 83.93 | 74.21 | 42.7 | 76.9 | 224 (b48) |
-| 14 | LoopNAR-α L1 † ‡ | NAR | 50M | **94.16** | 3.92 | 82.24 | 72.64 | 29.0 | 63.2 | 259 (b56) |
+| 4 | Hayai v2.5 Nova p384 | AR | 157M | **96.63** | 2.38 | 88.20 | 75.59 | 54.0 | 252.0 | 175 (b48) |
+| 5 | Hayai v2.5 Nova p256 | AR | 157M | **96.60** | 2.95 | 87.19 | 74.84 | 53.0 | 249.1 | 194 (b40) |
+| 6 | Hayai v2.5 Nova p512 | AR | 157M | **96.57** | 2.35 | 88.12 | 75.27 | 55.4 | 264.4 | 111 (b40) |
+| 7 | manga-ocr-nar-small-distil † ∥ | NAR | 30M | **96.39** | 2.29 | 89.09 | 78.57 | 8.4 | 35.0 | 287 (b48) |
+| 8 | Preview † | NAR | 196M | **95.85** | 2.92 | 85.70 | 78.51 | 31.9 | 103.0 | 91 (b16) |
+| 9 | manga-ocr-charspot-nano † ◇ | CharDet | 1.7M | **95.75** | 2.14 | 89.38 | 77.76 | 5.2 | 28.3 | 633 (b8) |
+| 10 | Hayai v2.1 | AR | 156M | **95.47** | 2.67 | 84.72 | 78.01 | 141.7 | 300.6 | 87 (b128) |
+| 11 | PaddleOCR-VL-For-Manga | AR (VLM) | 959M | **95.05** | 1.99 | 87.91 | 53.15 | 366.6 | 1024.4 | 6.6 (b10) |
+| 12 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.74** | 3.30 | 83.91 | 74.08 | 35.6 | 70.8 | 243 (b48) |
+| 13 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.72** | 3.20 | 83.91 | 74.19 | 42.7 | 76.9 | 224 (b48) |
+| 14 | LoopNAR-α L1 † ‡ | NAR | 50M | **94.15** | 3.92 | 82.23 | 72.63 | 29.0 | 63.2 | 259 (b56) |
 | 15 | baberuOCR v1.1 | AR | 113M | **93.38** | 3.62 | 81.90 | 70.89 | 123.6 | 278.3 | 105 (b256) |
-| 16 | mangaOCR | AR | 111M | **90.27** | 4.81 | 78.51 | 67.90 | 84.9 | 242.4 | 42 (b56) |
-| – | GPT-6 Astra * | LLM | — | 99.47 | 0.24 | 98.05 | 93.40 | — | — | — |
-| – | GPT-6.1 Sol * | LLM | — | 99.35 | 0.27 | 97.75 | 97.71 | — | — | — |
+| 16 | mangaOCR | AR | 111M | **90.27** | 4.81 | 78.52 | 67.92 | 84.9 | 242.4 | 42 (b56) |
+| – | GPT-6 Astra * | LLM | — | 99.46 | 0.24 | 98.02 | 93.38 | — | — | — |
+| – | GPT-6.1 Sol * | LLM | — | 99.34 | 0.28 | 97.73 | 97.69 | — | — | — |
 | – | Claude Opus 5.5 * | LLM | — | 98.05 | 0.59 | 95.60 | 88.33 | — | — | — |
 
 <details><summary>More models</summary>
@@ -48,9 +50,9 @@ Ranked by composite score (defined in [Scoring](#scoring)). 7,789 boxes, RTX 208
 | # | Model | Arch | Params | Composite ↑ | CER % ↓ | EM % ↑ | EM NFKC % ↑ | Per-image ms ↓ | Per-page ms (p50) ↓ | Max img/s ↑ |
 |---|---|---|---|---|---|---|---|---|---|---|
 | – | nar-small-R16 † △ | NAR | 54M | **98.12** | 1.08 | 93.86 | 82.23 | 9.3 | 37.5 | 284 (b48) |
-| – | e4 L3 † § | NAR | 54M | **97.31** | 1.70 | 91.23 | 80.07 | 42.8 | 71.9 | 227 (b32) |
-| – | e4 L2 † § | NAR | 54M | **97.30** | 1.72 | 91.17 | 80.06 | 35.5 | 64.3 | 267 (b48) |
-| – | e4 L1 † § | NAR | 54M | **97.15** | 1.94 | 90.64 | 79.66 | 28.3 | 58.1 | 282 (b24) |
+| – | e4 L3 † § | NAR | 54M | **97.30** | 1.70 | 91.21 | 80.05 | 42.8 | 71.9 | 227 (b32) |
+| – | e4 L2 † § | NAR | 54M | **97.29** | 1.73 | 91.14 | 80.04 | 35.5 | 64.3 | 267 (b48) |
+| – | e4 L1 † § | NAR | 54M | **97.16** | 1.94 | 90.64 | 79.66 | 28.3 | 58.1 | 282 (b24) |
 
 </details>
 
@@ -177,7 +179,7 @@ Predictions and labels are normalized with the same rules, **RIN v1.2** (reading
 | solid hearts → `♡` (new in v1.3.1) | `♥`, `❤` → `♡` |
 | stars → `☆` (new in v1.3.2) | `★`, `✩`, `⭐` → `☆` |
 
-Characters, small kana, brackets 「」『』, `〇` / `○` and the presence of a voicing mark are kept. Labels use `♡`. RIN v1.2 equals Read v1.2's `r7` plus the two v1.3 symbol rules, the v1.3.1 heart rule and the v1.3.2 star rule. Every label is identical under `r7`, RIN v1 and RIN v1.1; under RIN v1.2 four labels change (`★` → `☆`). `eval/normalize/rin.py` keeps RIN v1.1 as `normalize_rin_v11` and RIN v1 as `normalize_rin_v1` for reproducing v1.3.1 and v1.3 numbers.
+Characters, small kana, brackets 「」『』, `〇` / `○` and the presence of a voicing mark are kept. Labels write `〇` only as the kanji numeral zero (next to another kanji numeral) and `○` for every other circle (since v1.3.3). Labels use `♡`. RIN v1.2 equals Read v1.2's `r7` plus the two v1.3 symbol rules, the v1.3.1 heart rule and the v1.3.2 star rule. Every label is identical under `r7`, RIN v1 and RIN v1.1; under RIN v1.2 four labels change (`★` → `☆`). `eval/normalize/rin.py` keeps RIN v1.1 as `normalize_rin_v11` and RIN v1 as `normalize_rin_v1` for reproducing v1.3.1 and v1.3 numbers.
 
 **Why RIN.** The labels follow the readers' spelling, which varies for the same glyph: `～` in 326 boxes and `〜` in 112, `…` in 1,832 boxes and `・・` runs in 260, `！` in 868 and `!` in 560. A model that writes each symbol one way cannot match all labels without normalization. EM after NFKC alone is listed for reference.
 
