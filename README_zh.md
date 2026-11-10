@@ -32,15 +32,16 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 | 5 | Hayai v2.5 Nova p256 | AR | 157M | **96.60** | 2.95 | 87.19 | 74.84 | 53.0 | 249.1 | 194（b40） |
 | 6 | Hayai v2.5 Nova p512 | AR | 157M | **96.57** | 2.35 | 88.12 | 75.27 | 55.4 | 264.4 | 111（b40） |
 | 7 | manga-ocr-nar-small-distil † ∥ | NAR | 30M | **96.39** | 2.29 | 89.09 | 78.57 | 8.4 | 35.0 | 287（b48） |
-| 8 | Preview † | NAR | 196M | **95.85** | 2.92 | 85.70 | 78.51 | 31.9 | 103.0 | 91（b16） |
-| 9 | manga-ocr-charspot-nano † ◇ | CharDet | 1.7M | **95.75** | 2.14 | 89.38 | 77.76 | 5.2 | 28.3 | 633（b8） |
-| 10 | Hayai v2.1 | AR | 156M | **95.47** | 2.67 | 84.72 | 78.01 | 141.7 | 300.6 | 87（b128） |
-| 11 | PaddleOCR-VL-For-Manga | AR（VLM） | 959M | **95.05** | 1.99 | 87.91 | 53.15 | 366.6 | 1024.4 | 6.6（b10） |
-| 12 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.74** | 3.30 | 83.91 | 74.08 | 35.6 | 70.8 | 243（b48） |
-| 13 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.72** | 3.20 | 83.91 | 74.19 | 42.7 | 76.9 | 224（b48） |
-| 14 | LoopNAR-α L1 † ‡ | NAR | 50M | **94.15** | 3.92 | 82.23 | 72.63 | 29.0 | 63.2 | 259（b56） |
-| 15 | baberuOCR v1.1 | AR | 113M | **93.38** | 3.62 | 81.90 | 70.89 | 123.6 | 278.3 | 105（b256） |
-| 16 | mangaOCR | AR | 111M | **90.27** | 4.81 | 78.52 | 67.92 | 84.9 | 242.4 | 42（b56） |
+| 8 | PaddleOCR-VL-1.6 manga LoRA v6 ※ | AR（VLM） | 959M | **96.14** | 2.02 | 89.33 | 77.60 | — | — | — |
+| 9 | Preview † | NAR | 196M | **95.85** | 2.92 | 85.70 | 78.51 | 31.9 | 103.0 | 91（b16） |
+| 10 | manga-ocr-charspot-nano † ◇ | CharDet | 1.7M | **95.75** | 2.14 | 89.38 | 77.76 | 5.2 | 28.3 | 633（b8） |
+| 11 | Hayai v2.1 | AR | 156M | **95.47** | 2.67 | 84.72 | 78.01 | 141.7 | 300.6 | 87（b128） |
+| 12 | PaddleOCR-VL-For-Manga | AR（VLM） | 959M | **95.05** | 1.99 | 87.91 | 53.15 | 366.6 | 1024.4 | 6.6（b10） |
+| 13 | LoopNAR-α L2 † ‡ | NAR | 50M | **94.74** | 3.30 | 83.91 | 74.08 | 35.6 | 70.8 | 243（b48） |
+| 14 | LoopNAR-α L3 † ‡ | NAR | 50M | **94.72** | 3.20 | 83.91 | 74.19 | 42.7 | 76.9 | 224（b48） |
+| 15 | LoopNAR-α L1 † ‡ | NAR | 50M | **94.15** | 3.92 | 82.23 | 72.63 | 29.0 | 63.2 | 259（b56） |
+| 16 | baberuOCR v1.1 | AR | 113M | **93.38** | 3.62 | 81.90 | 70.89 | 123.6 | 278.3 | 105（b256） |
+| 17 | mangaOCR | AR | 111M | **90.27** | 4.81 | 78.52 | 67.92 | 84.9 | 242.4 | 42（b56） |
 | – | GPT-6 Astra * | LLM | — | 99.46 | 0.24 | 98.02 | 93.38 | — | — | — |
 | – | GPT-6.1 Sol * | LLM | — | 99.34 | 0.28 | 97.73 | 97.69 | — | — | — |
 | – | Claude Opus 5.5 * | LLM | — | 98.05 | 0.59 | 95.60 | 88.33 | — | — | — |
@@ -63,8 +64,9 @@ JMangaBench_Read 评测 OCR 模型在日文漫画文字框裁图上的准确率�
 - ∥ manga-ocr-nar-small-distil：由 manga-ocr-nar-small 蒸馏得到（保留 12 层编码器中的 6 层，解码器宽度 384，参数 30M），以 int8 量化训练。GPU 各列使用其发布的 CUDA 后端，在 fp16 中模拟 int8 运算（CUDA 图）。CPU 上以 int8 ONNX 运行（EM 按 RIN v1 计）：全部 7,789 框，Xeon Gold 6148 上 EM 88.92、每框 37.3 ms（p50，8 线程，含预处理，u8u8）；M1 Pro 上 EM 88.91、每框 21.0 ms（u8s8）。
 - ◇ manga-ocr-charspot-small、manga-ocr-charspot-nano：逐字检测 + 学习的阅读顺序，没有文本解码器（架构记作“CharDet”）。速度用随模型发布的 CUDA 后端测得：manga-ocr-charspot-small 为 fp32（常见形状用 CUDA 图，缩放在 GPU 上做），manga-ocr-charspot-nano 的稠密网络为 fp16（CUDA 图）。两者也能在 CPU 上以 ONNX 运行（见模型页）。
 - △ nar-small-R16：本评测集作者的实验模型，列在“更多模型”中、不排名；权重在 [muscgab/manga-ocr-nar-small](https://huggingface.co/muscgab/manga-ocr-nar-small/tree/r16) 的 `r16` 分支（不是正式发布，`main` 不变）。manga-ocr-nar-small 用真实漫画、长文本合成数据和它原来的训练集继续训练，输出长度从 64 字提高到 160 字；结构相同，只是输出位置从 65 个改为 161 个，CUDA 推理路径相同，fp16（权重为 fp16 做了等价缩放；fp16 与 fp32 输出在 7,789 框中 7,785 框相同）。它替换了同一训练系列更早的检查点 nar-small-R6（2026-10-22 上榜）。比较这一系列的训练方案时看过它在本版评测集上的成绩。
+- ※ PaddleOCR-VL-1.6 manga LoRA v6：[sorryhyun/paddleocr-vl-1.6-manga-lora](https://huggingface.co/sorryhyun/paddleocr-vl-1.6-manga-lora/tree/57e7c65024d753022299340b3b9b6aafc158a79b/v6) 的 `v6` 目录（commit 57e7c650），在 [PaddlePaddle/PaddleOCR-VL-1.6](https://huggingface.co/PaddlePaddle/PaddleOCR-VL-1.6) 上微调（视觉塔 LoRA，18 层解码器全量训练）；训练数据包括 Manga109-s 与 COO。只测准确率：在 Ascend 910B NPU 上以 bf16 运行，加载与生成用其模型卡的代码（每批 16 框、贪心解码、最多 80 个新 token；128 个测试框上 batch 16 与 batch 1 输出全部一致；7,789 个输出中 4 个达到 80 token 上限）。未测速度，因此速度各列为空，图中也没有它。裁图与其他模型一样原样输入（其模型卡建议留 12% 边距）。预测文件保留其输出中的换行，RIN 会去掉。未跑拟声词集。
 - \* LLM 识别器。hard 以外的 7,005 个标签就是三家一致的读法，因此这几行仅供参考，不参与排名（[附录 A4](APPENDIX_zh.md#a4-llm-参考分数不参与排名)）。
-- 准确率各列用 batch = 1 的输出。整页批量推理下综合分变化不超过 0.02。
+- 准确率各列用 batch = 1 的输出（PaddleOCR-VL-1.6 manga LoRA v6 为每批 16 框，见 ※）。整页批量推理下综合分变化不超过 0.02。
 - EM NFKC：只做 Unicode NFKC 后的完全匹配，供参考。它与 EM 的差距主要来自 RIN 合并的写法差异（见[评分](#评分)）。
 - `bN`：最大吞吐对应的 batch 大小。
 - 参数量取自公开权重文件；mangaOCR 按 fp32 权重文件大小估算。
@@ -224,6 +226,7 @@ GPU 空闲几秒后，驱动会降低频率，下一次请求会变慢（Hayai v
 | Hayai v2.1 | [JustANormalTinkerer/hayai-ocr-v2](https://huggingface.co/JustANormalTinkerer/hayai-ocr-v2)（main 分支 = v2.1） | 256 patch；贪心解码；fp16 |
 | Hayai v2.5 Nova | [JustANormalTinkerer/hayai-ocr-v2.5-nova](https://huggingface.co/JustANormalTinkerer/hayai-ocr-v2.5-nova) | 256 / 384 / 512 patch；其余同上 |
 | PaddleOCR-VL-For-Manga | [jzhang533/PaddleOCR-VL-For-Manga](https://huggingface.co/jzhang533/PaddleOCR-VL-For-Manga) | fp16；贪心解码；提示词 `OCR:`；批量推理使用逐图视觉注意力，每批最多 16 张 |
+| PaddleOCR-VL-1.6 manga LoRA v6 ※ | [sorryhyun/paddleocr-vl-1.6-manga-lora](https://huggingface.co/sorryhyun/paddleocr-vl-1.6-manga-lora/tree/57e7c65024d753022299340b3b9b6aafc158a79b/v6) 的 `v6` 目录，commit `57e7c650` | Ascend 910B 上 bf16（未测速）；模型卡代码：PEFT 合并 LoRA 后加载 `lm.safetensors`；提示词 `OCR:`；贪心解码；最多 80 个新 token；按裁图面积排序每批 16 框、左填充 |
 | baberuOCR v1.1 | [genshiai-daichi/baberu-ocr](https://huggingface.co/genshiai-daichi/baberu-ocr)（权重 = tag v1.1） | fp16；README 默认生成参数，但最多生成 128 个 token（README 默认 256；最长输出 100 个 token，没有触及上限） |
 | mangaOCR | [kha-white/manga-ocr-base](https://huggingface.co/kha-white/manga-ocr-base) | fp16；其余为 manga-ocr 包默认设置 |
 
