@@ -24,6 +24,8 @@ All numbers use batch = 1 outputs. CER, EM and 1-NED are computed after RIN v1.2
 
 | Model | All (7,789) | New (4,660) | v1.2 kept (3,129) | Hard (784) | Gold (1,266) | Non-printed (1,912) | Printed (5,877) | 1–4 ch (1,504) | 5–16 ch (4,675) | 17–32 ch (1,441) | >32 ch (169) | Vertical (7,158) | Horizontal (439) | Dialogue (6,948) | Narration (504) | Other (331) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ns3-98k | 0.73 | 0.62 | 0.88 | 3.87 | 2.49 | 1.41 | 0.58 | 1.68 | 0.53 | 0.36 | 2.89 | 0.54 | 3.59 | 0.57 | 0.50 | 4.63 |
+| Hayai v2.7 Supernova p256 | 1.80 | 1.11 | 2.86 | 8.14 | 5.39 | 1.84 | 1.79 | 1.75 | 0.58 | 1.75 | 9.70 | 1.49 | 6.88 | 1.54 | 1.02 | 9.21 |
 | manga-ocr-base-CPT-flex | 1.50 | 1.40 | 1.66 | 6.79 | 4.52 | 3.58 | 1.07 | 3.39 | 1.21 | 0.66 | 5.74 | 1.12 | 7.08 | 1.18 | 1.52 | 8.72 |
 | manga-ocr-nar-small | 1.71 | 1.61 | 1.86 | 7.13 | 4.82 | 4.12 | 1.21 | 3.24 | 1.39 | 0.84 | 6.42 | 1.31 | 7.61 | 1.35 | 1.57 | 9.96 |
 | manga-ocr-charspot-small | 1.37 | 1.25 | 1.54 | 5.64 | 3.77 | 4.42 | 0.74 | 4.12 | 1.24 | 0.73 | 3.10 | 1.02 | 6.76 | 1.05 | 1.40 | 8.34 |
@@ -53,6 +55,8 @@ All numbers use batch = 1 outputs. CER, EM and 1-NED are computed after RIN v1.2
 
 | Model | All (7,789) | New (4,660) | v1.2 kept (3,129) | Hard (784) | Gold (1,266) | Non-printed (1,912) | Printed (5,877) | 1–4 ch (1,504) | 5–16 ch (4,675) | 17–32 ch (1,441) | >32 ch (169) | Vertical (7,158) | Horizontal (439) | Dialogue (6,948) | Narration (504) | Other (331) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ns3-98k | 95.99 | 96.05 | 95.91 | 83.04 | 88.63 | 92.26 | 97.21 | 95.35 | 96.66 | 95.42 | 88.17 | 96.28 | 93.17 | 96.29 | 95.83 | 90.63 |
+| Hayai v2.7 Supernova p256 | 95.17 | 95.32 | 94.95 | 79.46 | 86.41 | 90.22 | 96.78 | 95.21 | 96.24 | 94.24 | 73.37 | 95.66 | 88.84 | 95.65 | 94.44 | 86.71 |
 | manga-ocr-base-CPT-flex | 91.71 | 91.91 | 91.40 | 70.54 | 79.46 | 83.11 | 94.50 | 91.22 | 92.39 | 92.16 | 73.37 | 92.09 | 87.02 | 92.00 | 92.66 | 84.29 |
 | manga-ocr-nar-small | 91.36 | 91.65 | 90.92 | 71.05 | 80.33 | 80.96 | 94.74 | 91.82 | 91.66 | 91.95 | 73.96 | 91.88 | 84.51 | 91.85 | 92.26 | 80.06 |
 | manga-ocr-charspot-small | 92.37 | 92.62 | 92.01 | 72.58 | 81.20 | 79.71 | 96.49 | 91.56 | 92.90 | 92.71 | 82.25 | 93.63 | 75.40 | 93.54 | 91.07 | 71.30 |
@@ -84,6 +88,8 @@ Mean over boxes of $1 - \mathrm{ED}/\max(|p|, |g|)$. The composite is the equal-
 
 | Model | All (7,789) | New (4,660) | v1.2 kept (3,129) | Hard (784) | Gold (1,266) | Non-printed (1,912) | Printed (5,877) | 1–4 ch (1,504) | 5–16 ch (4,675) | 17–32 ch (1,441) | >32 ch (169) | Vertical (7,158) | Horizontal (439) | Dialogue (6,948) | Narration (504) | Other (331) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ns3-98k | 99.24 | 99.25 | 99.23 | 96.52 | 97.68 | 98.27 | 99.56 | 98.35 | 99.44 | 99.63 | 98.45 | 99.31 | 98.56 | 99.31 | 99.46 | 97.66 |
+| Hayai v2.7 Supernova p256 | 99.11 | 99.17 | 99.02 | 95.73 | 97.21 | 97.95 | 99.48 | 98.31 | 99.36 | 99.48 | 96.16 | 99.21 | 97.65 | 99.22 | 99.23 | 96.68 |
 | manga-ocr-base-CPT-flex | 98.31 | 98.38 | 98.21 | 93.19 | 95.44 | 95.84 | 99.11 | 96.69 | 98.57 | 99.36 | 96.59 | 98.42 | 96.68 | 98.41 | 98.81 | 95.45 |
 | manga-ocr-nar-small | 98.21 | 98.33 | 98.02 | 93.31 | 95.46 | 95.48 | 99.09 | 96.82 | 98.43 | 99.16 | 96.27 | 98.30 | 97.01 | 98.32 | 98.81 | 94.93 |
 | manga-ocr-charspot-small | 98.31 | 98.38 | 98.21 | 93.64 | 95.67 | 94.95 | 99.40 | 96.27 | 98.68 | 99.26 | 98.14 | 98.65 | 93.82 | 98.64 | 98.17 | 91.85 |
@@ -113,6 +119,8 @@ Mean over boxes of $1 - \mathrm{ED}/\max(|p|, |g|)$. The composite is the equal-
 
 | Model | All (7,789) | New (4,660) | v1.2 kept (3,129) | Hard (784) | Gold (1,266) | Non-printed (1,912) | Printed (5,877) | 1–4 ch (1,504) | 5–16 ch (4,675) | 17–32 ch (1,441) | >32 ch (169) | Vertical (7,158) | Horizontal (439) | Dialogue (6,948) | Narration (504) | Other (331) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| ns3-98k | 83.93 | 83.97 | 83.86 | 72.70 | 78.36 | 83.73 | 83.99 | 83.24 | 84.98 | 82.79 | 70.41 | 83.85 | 85.42 | 83.62 | 86.71 | 86.40 |
+| Hayai v2.7 Supernova p256 | 83.30 | 83.56 | 82.90 | 70.28 | 77.01 | 82.37 | 83.60 | 83.18 | 84.68 | 81.89 | 57.99 | 83.35 | 82.46 | 83.13 | 85.52 | 83.69 |
 | manga-ocr-base-CPT-flex | 80.60 | 80.77 | 80.35 | 62.12 | 70.93 | 76.15 | 82.05 | 80.52 | 81.73 | 79.67 | 57.99 | 80.60 | 80.87 | 80.18 | 85.32 | 82.18 |
 | manga-ocr-nar-small | 80.34 | 80.71 | 79.80 | 62.37 | 71.25 | 74.11 | 82.37 | 80.92 | 81.07 | 80.01 | 57.99 | 80.46 | 78.36 | 80.12 | 85.12 | 77.95 |
 | manga-ocr-charspot-small | 80.91 | 81.16 | 80.54 | 63.14 | 71.48 | 73.06 | 83.46 | 80.45 | 81.73 | 80.36 | 66.86 | 81.64 | 70.62 | 81.38 | 82.34 | 70.09 |
@@ -144,6 +152,8 @@ Boxes that are exact under RIN but not under NFKC alone, grouped by the characte
 
 | Model | Exact under RIN, not under NFKC | Ellipsis | Tilde | Long dash | Quotes | Whitespace and line breaks | Dakuten | Other |
 |---|---|---|---|---|---|---|---|---|
+| ns3-98k | 941 | 533 | 315 | 69 | 28 | 7 | 0 | 2 |
+| Hayai v2.7 Supernova p256 | 925 | 529 | 305 | 69 | 25 | 7 | 0 | 2 |
 | manga-ocr-nar-small | 858 | 500 | 278 | 47 | 18 | 7 | 0 | 0 |
 | nar-small-R16 | 907 | 529 | 298 | 62 | 22 | 7 | 0 | 2 |
 | manga-ocr-nar-small-distil | 819 | 492 | 257 | 39 | 18 | 6 | 0 | 0 |
@@ -171,10 +181,12 @@ Labels keep the reader's spelling, and the same symbol is often written in sever
 
 ## A2. Speed details
 
-RTX 2080 Ti (11 GB), all models in fp16. The host is a 2× Xeon Gold 6148; each run is pinned with `taskset` to 8–10 cores (avoiding the cores isolated by the system), with `OMP_NUM_THREADS` / `MKL_NUM_THREADS` and similar capped at 8. Up to four models run at the same time, one per GPU.
+RTX 2080 Ti (11 GB), all models in fp16. The host is a 2× Xeon Gold 6148; each run is pinned with `taskset` to 8–10 cores (avoiding the cores isolated by the system), with `OMP_NUM_THREADS` / `MKL_NUM_THREADS` and similar capped at 8. Up to four models run at the same time, one per GPU. ns3-98k and Hayai v2.7 Supernova p256 were timed on a Xeon Platinum 8255C host. The one-page-at-a-time and first-crop columns are blank for these models.
 
 | Model | Per-image ms (mean / p50 / p90) | VRAM at batch 1 (MB) | Per-page ms (p50 / p90) | ms per box, per-page test | Composite, per-page outputs | Max img/s | Best batch | Reserved GB at best batch | Match with batch 1 at best batch | One page at a time, gap 0 / 10 / 30 s (ms) | First crop, warm / after 20 s idle (ms) |
 |---|---|---|---|---|---|---|---|---|---|---|---|
+| ns3-98k | 15.6 / 15.1 / 19.8 | 288 | 55 / 98 | 7.28 | 98.91 | 215.4 | 32 | 8.0 | 100.0% | — | — |
+| Hayai v2.7 Supernova p256 | 33.3 / 31.0 / 44.6 | 1010 | 65 / 96 | 8.00 | 98.72 | 331.0 | 64 | 2.9 | 100.0% | — | — |
 | manga-ocr-base-CPT-flex | 11.0 / 10.1 / 15.9 | 1751 | 43 / 78 | 5.47 | 97.48 | 260.1 | 32 | 2.5 | 100.0% | 50 / 74 / 75 | 9.5 / 28.1 |
 | manga-ocr-nar-small | 9.1 / 8.9 / 9.9 | 1008 | 36 / 63 | 4.61 | 97.28 | 298.6 | 48 | 2.4 | 100.0% | 37 / 53 / 56 | 7.5 / 24.7 |
 | manga-ocr-charspot-small | 7.2 / 6.8 / 8.5 | 750 | 43 / 83 | 5.62 | 97.17 | 274.4 | 112 | 6.2 | 100.0% | 50 / 72 / 84 | 6.2 / 32.9 |
@@ -381,6 +393,7 @@ Pre-filling saves time but can bias the reviewer toward the majority reading. Th
 | v1.3.2 (models) | 2026-10-25 | nar-small-R16 (experimental model by the authors; weights on the `r16` branch of muscgab/manga-ocr-nar-small) replaces nar-small-R6 under "More models" (unranked) and in the appendix tables, including the SFX set; predictions in `data/predictions/{batch1,page,sfx_batch1}/nar_small_r16.jsonl`. The nar-small-R6 prediction files stay in the repository. No box, label or scoring change |
 | v1.3.3 | 2026-10-27 | label convention for circles: `〇` only as the kanji numeral zero, `○` for every other circle; 2 labels `〇` → `○` (10355287_6, 11075685_1; `text` and `text_rin`); all scores recomputed (EM −0.03 to +0.01 per model, ranking unchanged). RIN, other boxes and predictions unchanged; SFX set unchanged |
 | v1.3.3 (models) | 2026-11-10 | PaddleOCR-VL-1.6 manga LoRA v6 (sorryhyun/paddleocr-vl-1.6-manga-lora, folder `v6`) added to the leaderboard and the appendix tables, accuracy only (Ascend 910B, bf16; no speed, not in the charts); predictions in `data/predictions/batch1/paddleocr_vl_1_6_manga_lora_v6.jsonl`. Not run on the SFX set or under page batching. No box, label or scoring change |
+| v1.3.3 (models) | 2026-11-15 | Added main-set accuracy and CUDA speed measurements for ns3-98k and Hayai v2.7 Supernova p256. |
 
 **Changes in v1.3**
 
